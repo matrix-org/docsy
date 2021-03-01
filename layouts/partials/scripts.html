@@ -27,7 +27,7 @@ window.markmap = {
   },
 };
 </script>
-<script src="https://cdn.jsdelivr.net/npm/markmap-autoloader"></script>
+<script src="{{ "/js/markmap-autoloader-0.14.3.min.js" | relURL }}" integrity="sha512-TLaMJmYnKrLoDVFAaWZUtZBshdO4G4MGJMNH5wCg25RD7nQfbz9Uor9ONF+YLdsEP4EI3wiVg30rSz7RMvKKFg==" crossorigin="anonymous"></script>
 {{ end -}}
 
 {{ if .Site.Params.plantuml.enable -}}
@@ -36,22 +36,22 @@ window.markmap = {
 
 {{ if  $needKaTeX -}}
 {{/* load stylesheet and scripts for KaTeX support */ -}}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css"
+<link rel="stylesheet" href="{{ "/css/katex-0.16.10.min.css" | relURL }}"
       integrity="sha512-r2+FkHzf1u0+SQbZOoIz2RxWOIWfdEzRuYybGjzKq18jG9zaSfEy9s3+jMqG/zPtRor/q4qaUCYQpmSjTw8M+g==" crossorigin="anonymous">
   {{/* The loading of KaTeX is deferred to speed up page rendering */ -}}
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"
+<script defer src="{{ "/js/katex-0.16.10.min.js" | relURL }}"
         integrity="sha512-INps9zQ2GUEMCQD7xiZQbGUVnqnzEvlynVy6eqcTcHN4+aQiLo9/uaQqckDpdJ8Zm3M0QBs+Pktg4pz0kEklUg=="
         crossorigin="anonymous">
 </script>
   {{ if $needmhchem -}}
   {{/* To add support for displaying chemical equations and physical units, load the mhchem extension: */ -}}
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/mhchem.min.js"
+<script defer src="{{ "/js/mhchem-0.16.10.min.js" | relURL }}"
         integrity="sha512-mxjNw/u1lIsFC09k/unscDRY3ofIYPVFbWkP8slrePcS36ht4d/OZ8rRu5yddB2uiqajhTcLD8+jupOWuYPebg=="
         crossorigin="anonymous">
 </script>
   {{ end -}}
   {{/* To automatically render math in text elements, include the auto-render extension: */ -}}
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+<script defer src="{{ "/js/auto-render-0.16.10.min.js" | relURL }}"
        integrity="sha512-YJVxTjqttjsU3cSvaTRqsSl0wbRgZUNF+NGGCgto/MUbIvaLdXQzGTCQu4CvyJZbZctgflVB0PXw9LLmTWm5/w==" crossorigin="anonymous"
        {{ printf "onload='renderMathInElement(%s, %s);'" (( $.Page.Site.Params.katex.html_dom_element | default "document.body" ) | safeJS ) ( printf "%s" ( $.Page.Site.Params.katex.options | jsonify )) | safeHTMLAttr }}>
 </script>
@@ -104,7 +104,7 @@ window.markmap = {
 {{ partial "hooks/body-end.html" . -}}
 
 {{ define "algolia/scripts" -}}
-<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3.6.0"
+<script src="{{ "/js/docsearch-3.6.0.min.js" | relURL }}"
   integrity="sha512-FtDaTWf3IS29TLuYzTPlytjGqcXkwrzG9ivq7xXElnOZeiYTbcIy/hwXAgrrRNnI0+PfN+WFz4/+4phhJmuS8Q=="
   crossorigin="anonymous" ></script>
 <script type="text/javascript">
