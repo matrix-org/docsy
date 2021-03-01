@@ -1,6 +1,6 @@
 # Docsy 
 
-**Note: This is standard [docsy](https://github.com/google/docsy) but with remote js files replaced with local copies.**
+**Note: This is standard [docsy](https://github.com/google/docsy) but with remote js/font files replaced with local copies.**
 
 Docsy is a [Hugo](https://gohugo.io/) theme for technical documentation sets, providing simple navigation, site structure, and more.
 
