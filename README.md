@@ -2,6 +2,8 @@
 
 **Note: This is standard [docsy](https://github.com/google/docsy) but with remote js/font files replaced with local copies.**
 
+**Some font files for Persian, Arabic and Hebrew are still loaded from Google in [docsy/assets/scss/rtl/_main.scss](docsy/assets/scss/rtl/_main.scss). PRs welcome to replace them.**
+
 Docsy is a [Hugo](https://gohugo.io) theme for technical documentation sets,
 providing simple navigation, site structure, and more.
 
