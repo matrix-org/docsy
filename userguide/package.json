@@ -1,22 +1,25 @@
 {
-  "name": "tech-doc-hugo",
-  "version": "0.0.1",
-  "description": "Hugo theme for technical documentation.",
-  "main": "none.js",
+  "name": "docsy-user-guide",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "_build": "npm run _hugo-dev",
+    "_check-links": "make check-links",
+    "_hugo": "hugo --cleanDestinationDir --themesDir ../..",
+    "_hugo-dev": "npm run _hugo -- -e dev -DFE",
+    "_serve": "npm run _hugo-dev -- serve",
+    "build:preview": "npm run _hugo-dev -- --minify --baseURL \"${DEPLOY_PRIME_URL:-/}\"",
+    "build:production": "npm run _hugo -- --minify",
+    "build": "npm run _build",
+    "check-links:all": "HTMLTEST_ARGS= npm run _check-links",
+    "check-links": "npm run _check-links",
+    "clean": "rm -Rf public",
+    "make:public": "git init -b main public",
+    "precheck-links:all": "npm run build",
+    "precheck-links": "npm run build",
+    "postbuild:preview": "npm run _check-links",
+    "postbuild:production": "npm run _check-links",
+    "prepare": "cd .. && npm install",
+    "serve": "npm run _serve"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bep/tech-doc-hugo.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/bep/tech-doc-hugo/issues"
-  },
-  "homepage": "https://github.com/bep/tech-doc-hugo#readme",
-  "dependencies": {},
   "devDependencies": {
     "autoprefixer": "^9.5.0",
     "postcss-cli": "^5.0.1"
