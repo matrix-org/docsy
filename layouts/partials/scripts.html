@@ -1,5 +1,5 @@
 {{ if .Site.Params.mermaid.enable -}}
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@9.1.3/dist/mermaid.min.js" integrity="sha512-E/owfVh8/U1xwhvIT4HSI064DRc1Eo/xf7AYax84rt9gVqA8tc/JNH/lvTl1tuw9PUHQIMGUtObkjYkgRjFqAA==" crossorigin="anonymous"></script>
+  <script src="{{ "/js/mermaid-9.1.3.min.js" | relURL }}" integrity="sha512-E/owfVh8/U1xwhvIT4HSI064DRc1Eo/xf7AYax84rt9gVqA8tc/JNH/lvTl1tuw9PUHQIMGUtObkjYkgRjFqAA==" crossorigin="anonymous"></script>
 {{ end -}}
 
 {{ if .Site.Params.markmap.enable -}}
@@ -20,7 +20,7 @@ window.markmap = {
   },
 };
 </script>
-<script src="https://cdn.jsdelivr.net/npm/markmap-autoloader"></script>
+<script src="{{ "/js/markmap-autoloader-0.14.3.min.js" | relURL }}" integrity="sha512-TLaMJmYnKrLoDVFAaWZUtZBshdO4G4MGJMNH5wCg25RD7nQfbz9Uor9ONF+YLdsEP4EI3wiVg30rSz7RMvKKFg==" crossorigin="anonymous"></script>
 {{ end -}}
 
 {{ if .Site.Params.plantuml.enable -}}
@@ -29,21 +29,21 @@ window.markmap = {
 
 {{ if .Site.Params.katex.enable -}}
 <!-- load stylesheet and scripts for KaTeX support -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
+<link rel="stylesheet" href="{{ "/css/katex-0.15.1.min.css" | relURL }}"
     integrity="sha512-vJqxkZ+Sugf/6WRlpcxN01qVfX/29hF6qc33eHF1va3NgoV+U+wCi+uTAsQ10sDoGyBxHLdaHvGwDlV3yVYboA==" crossorigin="anonymous">
 <!-- The loading of KaTeX is deferred to speed up page rendering -->
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"
+<script defer src="{{ "/js/katex-0.15.1.min.js" | relURL }}"
     integrity="sha512-5ufNcHqOYgilGEHPfuRIQ5B/vDS1M8+UC+DESZ5CwVgGTg+b2Ol/15rYL/GiCWJ/Sx8oVo0FPFok1dPk8U9INQ=="
     crossorigin="anonymous"></script>
 <!-- check whether support of mhchem is enabled in config.toml -->
 {{ if .Site.Params.katex.mhchem.enable -}}
 <!-- To add support for displaying chemical equations and physical units, load the mhchem extension: -->
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/mhchem.min.js"
+<script defer src="{{ "/js/mhchem-0.15.1.min.js" | relURL }}"
     integrity="sha512-HWb6LyQhO6UkmYLjdSblpgiOvvbdkoMRjln0POPhOVbZu3l4QdqwZnMJ/cuwKScU5pWARejB495TAAAz0WNsXQ=="
     crossorigin="anonymous"></script>
 {{ end -}}
 <!-- To automatically render math in text elements, include the auto-render extension: -->
-<script defer src='https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js'
+<script defer src="{{ "/js/auto-render-0.15.1.min.js" | relURL }}"
     integrity='sha512-ZA/RPrAo88DlwRnnoNVqKINnQNcWERzRK03PDaA4GIJiVZvGFIWQbdWCsUebMZfkWohnfngsDjXzU6PokO4jGw==' crossorigin='anonymous'
     {{ printf "onload='renderMathInElement(%s, %s);'" (( .Site.Params.katex.html_dom_element | default "document.body" ) | safeJS ) ( printf "%s" ( $.Site.Params.katex.options | jsonify )) | safeHTMLAttr }}></script>
 {{ end -}}
