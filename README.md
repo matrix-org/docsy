@@ -1,12 +1,6 @@
 # Docsy
 
-[![Project status: active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Project releases](https://img.shields.io/github/release/google/docsy)](https://github.com/google/docsy/releases)
-[![Project build Status](https://badges.netlify.com/api/docsydocs.svg?branch=main)](https://app.netlify.com/sites/docsydocs/deploys)
-[![Project contributors](https://img.shields.io/github/contributors/google/docsy)](https://github.com/google/docsy/graphs/contributors)
-[![Project license](https://img.shields.io/github/license/google/docsy)](https://github.com/google/docsy/blob/main/LICENSE)
-
-## 🚧 WARNING 🚧 : `main` is under development and potentially unstable! Use official Docsy [releases].
+**Note: This is standard [docsy](https://github.com/google/docsy) but with remote js/font files replaced with local copies.**
 
 Docsy is a [Hugo](https://gohugo.io) theme for technical documentation sets,
 providing simple navigation, site structure, and more.
