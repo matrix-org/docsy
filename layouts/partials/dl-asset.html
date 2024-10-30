@@ -1,35 +1,18 @@
 {{/*
 
   A partial to download an asset from a CDN at build time and serve it from our
-  server. It outputs HTML attributes of the form:
+  server. It outputs a string which is the relative path to the asset.
 
-  {src/href}="{permalink}" integrity="{hash}"
-
-  Parameters:
-
-  * `src` or `href`: a string, the URL of the asset to download. The name of the
-    parameter will be reused as the attribute for the permalink.
-  * `integrity`: a boolean, whether to output the integrity hash.
+  It accepts a string, which is the URL of the asset to download.
 
 */}}
-{{- $url := "" -}}
-{{ $attribute := "" -}}
-{{ $integrity := .integrity -}}
-
-{{ with .src -}}
-  {{ $url = . -}}
-  {{ $attribute = "src" -}}
-{{ else -}}
-  {{ $url = .href -}}
-  {{ $attribute = "href" -}}
-{{ end -}}
+{{- $url := . -}}
 
 {{ with resources.GetRemote $url -}}
   {{ with .Err -}}
     {{ errorf "Could not retrieve asset at '%s' from CDN. Reason: %s." $url . -}}
   {{ else -}}
-    {{ $attribute }}="{{ .RelPermalink -}}"
-    {{- with (and $integrity .Data.Integrity) }} integrity="{{ . }}" {{ end -}}
+    {{ .RelPermalink -}}
   {{ end -}}
 {{ else -}}
   {{ errorf "Could not find asset at '%s' on the CDN." $url -}}

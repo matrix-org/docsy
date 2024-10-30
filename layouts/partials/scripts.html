@@ -32,7 +32,7 @@ window.markmap = {
   },
 };
 </script>
-<script {{ partial "dl-asset.html" (dict "src" "https://cdn.jsdelivr.net/npm/markmap-autoloader" "integrity" 1) | safeHTMLAttr }}></script>
+<script src="{{ partial "dl-asset.html" "https://cdn.jsdelivr.net/npm/markmap-autoloader" }}"></script>
 {{ end -}}
 
 {{ if .Site.Params.plantuml.enable -}}
@@ -41,22 +41,22 @@ window.markmap = {
 
 {{ if  $needKaTeX -}}
 {{/* load stylesheet and scripts for KaTeX support */ -}}
-<link rel="stylesheet" {{ partial "dl-asset.html" (dict "href" "https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css") | safeHTMLAttr }}
+<link rel="stylesheet" href="{{ partial "dl-asset.html" "https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" }}"
       integrity="sha512-mQwom8Ns4op+H29oDkD/LXO/OsXPvCFfkgZkFAVrhhePzRLU8NUI3Nkm43NhWUSmj3p5Cca2HTEkMQmXQRwDQQ==" crossorigin="anonymous">
   {{/* The loading of KaTeX is deferred to speed up page rendering */ -}}
-<script defer {{ partial "dl-asset.html" (dict "src" "https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js") | safeHTMLAttr }}
+<script defer src="{{ partial "dl-asset.html" "https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" }}"
         integrity="sha512-sHSNLECRJSK+BFs7E8DiFc6pf6n90bLI85Emiw1jhreduZhK3VXgq9l4kAt9eTIHYAcuQBKHL01QKs4/3Xgl8g=="
         crossorigin="anonymous">
 </script>
   {{ if $needmhchem -}}
   {{/* To add support for displaying chemical equations and physical units, load the mhchem extension: */ -}}
-<script defer {{ partial "dl-asset.html" (dict "src" "https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/mhchem.min.js") | safeHTMLAttr }}
+<script defer src="{{ partial "dl-asset.html" "https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/mhchem.min.js" }}"
         integrity="sha512-V1hl0fnOXW6Cdqe5ZVqtw8TBpJVpu3XRDRQti96j/04+tMarPrCdXEUE3UdfvfKYTpOn9DV4zEZBVr0HhDiuiQ=="
         crossorigin="anonymous">
 </script>
   {{ end -}}
   {{/* To automatically render math in text elements, include the auto-render extension: */ -}}
-<script defer {{ partial "dl-asset.html" (dict "src" "https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js") | safeHTMLAttr }}
+<script defer src="{{ partial "dl-asset.html" "https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" }}"
        integrity="sha512-iWiuBS5nt6r60fCz26Nd0Zqe0nbk1ZTIQbl3Kv7kYsX+yKMUFHzjaH2+AnM6vp2Xs+gNmaBAVWJjSmuPw76Efg==" crossorigin="anonymous"
        {{ printf "onload='renderMathInElement(%s, %s);'" (( $.Page.Site.Params.katex.html_dom_element | default "document.body" ) | safeJS ) ( printf "%s" ( $.Page.Site.Params.katex.options | jsonify )) | safeHTMLAttr }}>
 </script>
@@ -78,7 +78,7 @@ window.markmap = {
 
 {{ if $needmermaid -}}
 {{ $jsArray = $jsArray | append $jsMermaid -}}
-<script {{ partial "dl-asset.html" (dict "src" "https://cdn.jsdelivr.net/npm/mermaid@9.3.0/dist/mermaid.min.js") | safeHTMLAttr }} integrity="sha512-ku2nmBrzAXY5YwohzTqLYH1/lvyMrpTVxgQKrvTabd/b/uesqltLORdmpVapYv6QhZVCLUX6wkvFaKOAY4xpUA==" crossorigin="anonymous"></script>
+<script src="{{ partial "dl-asset.html" "https://cdn.jsdelivr.net/npm/mermaid@9.3.0/dist/mermaid.min.js" }}" integrity="sha512-ku2nmBrzAXY5YwohzTqLYH1/lvyMrpTVxgQKrvTabd/b/uesqltLORdmpVapYv6QhZVCLUX6wkvFaKOAY4xpUA==" crossorigin="anonymous"></script>
 {{ end -}}
 
 {{ $js := $jsArray | resources.Concat "js/main.js" -}}
@@ -108,7 +108,7 @@ window.markmap = {
 {{ partial "hooks/body-end.html" . -}}
 
 {{ define "algolia/scripts" -}}
-<script {{ partial "dl-asset.html" (dict "src" "https://cdn.jsdelivr.net/npm/@docsearch/js@3.5.2") | safeHTMLAttr }}
+<script src="{{ partial "dl-asset.html" "https://cdn.jsdelivr.net/npm/@docsearch/js@3.5.2" }}"
   integrity="sha512-LzxWPDNELae1RSIsDRSitKYPJpRtjYo22GbOl+d+xLcjKiZQRRdxSTI3cRRHw7O05e0MbIIu33QnU2rt6ymQ6A=="
   crossorigin="anonymous" ></script>
 <script type="text/javascript">
