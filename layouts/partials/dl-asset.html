@@ -1,0 +1,19 @@
+{{/*
+
+  A partial to download an asset from a CDN at build time and serve it from our
+  server. It outputs a string which is the relative path to the asset.
+
+  It accepts a string, which is the URL of the asset to download.
+
+*/}}
+{{- $url := . -}}
+
+{{ with resources.GetRemote $url -}}
+  {{ with .Err -}}
+    {{ errorf "Could not retrieve asset at '%s' from CDN. Reason: %s." $url . -}}
+  {{ else -}}
+    {{ .RelPermalink -}}
+  {{ end -}}
+{{ else -}}
+  {{ errorf "Could not find asset at '%s' on the CDN." $url -}}
+{{ end -}}
