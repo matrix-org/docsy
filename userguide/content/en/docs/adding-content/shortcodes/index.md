@@ -105,7 +105,7 @@ Please follow this space for updates!
 {{%/* blocks/feature icon="fa-brands fa-github" title="Contributions welcome!" url="https://github.com/gohugoio/hugo" */%}}
 We do a [Pull Request](https://github.com/gohugoio/hugo/pulls) contributions workflow on **GitHub**. New users are always welcome!
 {{%/* /blocks/feature */%}}
-{{%/* blocks/feature icon="fa-brands fa-twitter" title="Follow us on Twitter!" url="https://twitter.com/GoHugoIO" */%}}
+{{%/* blocks/feature icon="fa-brands fa-x-twitter" title="Follow us on Twitter!" url="https://twitter.com/GoHugoIO" */%}}
 For announcement of latest features etc.
 {{%/* /blocks/feature */%}}
 {{</* /blocks/section */>}}
@@ -129,6 +129,7 @@ We do a [Pull Request](https://github.com/gohugoio/hugo/pulls) contributions wor
 | ---------------- |------------| ------------|
 | title | | The title to use.
 | url | | The URL to link to.
+| url_text | The [language parameter](/docs/language/#internationalization-bundles) value of [`ui_read_more`](https://github.com/google/docsy/blob/main/i18n/en.toml) | The link text to use.
 | icon | | The icon class to use.
 
 
@@ -173,14 +174,14 @@ This is a warning.
 The **pageinfo** shortcode creates a text box that you can use to add banner information for a page: for example, letting users know that the page contains placeholder content, that the content is deprecated, or that it documents a beta feature.
 
 ```go-html-template
-{{%/* pageinfo color="primary" */%}}
+{{%/* pageinfo color="info" */%}}
 This is placeholder content.
 {{%/* /pageinfo */%}}
 ```
 
 Renders to:
 
-{{% pageinfo color="primary" %}}
+{{% pageinfo color="info" %}}
 This is placeholder content
 {{% /pageinfo %}}
 
@@ -285,6 +286,10 @@ description: Reference for the Pet Store API
 {{< /tabpane >}}
 
 You can customize Swagger UI's look and feel by overriding Swagger's CSS in `themes/docsy/assets/scss/_swagger.scss`.
+
+{{% alert title="Warning" color="warning" %}}
+This shortcode relies on JavaScript libraries hosted on unpkg. Make sure that you can access unpkg from your network when building or loading your site.
+{{% /alert %}}
 
 ### redoc
 

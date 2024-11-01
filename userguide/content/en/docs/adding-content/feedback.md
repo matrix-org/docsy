@@ -33,41 +33,21 @@ started** section of [Introducing Google Analytics 4 (GA4)][ga4-intro].
 Enable Google Analytics by adding your project's analytics ID to the site
 configuration file. For details, see [Configure Google Analytics][].
 
-By default, Docsy uses the [gtag.js][] analytics library for both GA4 (which
-_requires_ `gtag.js`) and Universal Analytics (UA) site tags. If you prefer using
-the older `analytics.js` library for your UA site tag, then set
-`params.disableGtagForUniversalAnalytics` to `true` in your project's [configuration file].
-
-{{< tabpane >}}
-{{< tab header="Configuration file:" disabled=true />}}
-{{< tab header="hugo.toml" lang="toml" >}}
-[params]
-disableGtagForUniversalAnalytics = true
-{{< /tab >}}
-{{< tab header="hugo.yaml" lang="yaml" >}}
-params:
-  disableGtagForUniversalAnalytics: true
-{{< /tab >}}
-{{< tab header="hugo.json" lang="json" >}}
-{
-  "params": {
-    "disableGtagForUniversalAnalytics": true
-  }
-}
-{{< /tab >}}
-{{< /tabpane >}}
-
-{{% alert title="Warning" color="warning" %}}
+{{% alert title="Deprecation note and warning" color="warning" %}}
   <!-- Remove this warning once the Hugo docs have been updated to include it. -->
 
-  You can configure your project's analytics ID by setting either the top-level
-  `googleAnalytics` config parameter or `services.googleAnalytics.id`. **Do not
-  define both,** otherwise this can result in [unexpected behavior][]. For
-  details, see [Is services.googleAnalytics.id an alias for
+  While you can configure your project's analytics ID by setting either the
+  top-level `googleAnalytics` config parameter or `services.googleAnalytics.id`,
+  **`googleAnalytics` was [deprecated in Hugo 0.120.0][v0.120.0]** and
+  will be removed in a future release.
+
+  **Do not define both parameters,** otherwise this can result in [unexpected
+  behavior][]. For details, see [Is services.googleAnalytics.id an alias for
   googleAnalytics][alias-discussion].
 
   [alias-discussion]: https://discourse.gohugo.io/t/config-is-services-googleanalytics-id-an-alias-for-googleanalytics/39469
   [unexpected behavior]: https://github.com/google/docsy/issues/921
+  [v0.120.0]: https://github.com/gohugoio/hugo/releases/tag/v0.120.0
 
 {{% /alert %}}
 
