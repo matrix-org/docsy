@@ -222,6 +222,8 @@ By default, the section menu shows the current section fully expanded all the wa
 
 With the compact menu (`.ui.sidebar_menu_compact = true`), only the current page's ancestors, siblings and direct descendants are shown. You can use the optional parameter `.ui.ul_show` to set a desired menu depth to always be visible. For example, with `.ui.ul_show = 1` the first menu level is always displayed.
 
+The number of sidebar entries shown per section can be configured using the `.ui.sidebar_menu_truncate` parameter (default: 100).
+
 As well as the completely expanded and compact menu options, you can also create a foldable menu by setting the site parameter `ui.sidebar_menu_foldable = true` in `hugo.toml`. The foldable menu lets users expand and collapse menu sections by toggling arrow icons beside the section parents in the menu.
 
 On large sites (default: > 2000 pages) the section menu is not generated for each page, but cached for the whole section. The HTML classes for marking the active menu item (and menu path) are then set using JS. You can adjust the limit for activating the cached section menu with the optional parameter `.ui.sidebar_cache_limit`.
@@ -310,3 +312,33 @@ params:
 }
 {{< /tab >}}
 {{< /tabpane >}}
+
+## Heading self links
+
+Docsy supports build-time generation of heading self links using Hugo's
+`render-heading.html` [hook].
+
+To enable this feature in
+your project, define `layouts/_default/_markup/render-heading.html` as:
+
+```go-html-template
+{{ template "_default/_markup/td-render-heading.html" . }}
+```
+
+The heading self-link anchor class is `.td-heading-self-link`, which you can
+customize for your project. By default, the heading self-link style has these defaults:
+
+- The self-link symbol is `#`.
+- The symbol is always visible on mobile and touch devices, otherwise it is only
+  visible on hover or focus.
+
+Your projects can also reuse (in your own custom heading render hook) or
+override the heading self-link template
+`_default/_markup/_td-heading-self-link.html`, which is defined in
+[layouts/_default/_markup/td-render-heading.html].
+
+[configuration file]:
+  https://gohugo.io/getting-started/configuration/#configuration-file
+[layouts/_default/_markup/td-render-heading.html]:
+  https://github.com/google/docsy/tree/main/layouts/_default/_markup/td-render-heading.html
+[hook]: https://gohugo.io/templates/render-hooks/
