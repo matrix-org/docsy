@@ -4,10 +4,9 @@ enableRobotsTXT: true
 enableGitInfo: true
 theme: [docsy]
 
-pygmentsCodeFences: true
-pygmentsUseClasses: false
-pygmentsUseClassic: false
-pygmentsStyle: tango
+ignoreLogs:
+  # FIXME: find a better way to encode `project` pages than having to ignore warnings.
+  - warning-frontmatter-params-overrides # cSpell:disable-line
 
 outputs:
   home: [HTML]
@@ -15,7 +14,7 @@ outputs:
   section: [HTML, RSS, print]
 
 imaging:
-  resampleFilter: CatmullRom
+  resampleFilter: CatmullRom # cSpell:disable-line
   quality: 75
   anchor: smart
 
@@ -38,6 +37,12 @@ markup:
     parser:
       attribute:
         block: true
+    extensions:
+      passthrough:
+        enable: true
+        delimiters:
+          block: [['\[', '\]'], ['$$', '$$']]
+          inline: [['\(', '\)']]
     renderer:
       unsafe: true
   highlight:
@@ -52,7 +57,7 @@ params:
   privacy_policy: https://policies.google.com/privacy
   version_menu: Releases
   archived_version: false
-  version: 0.11.0
+  version: 0.12.0
   url_latest_version: https://example.com
   github_repo: https://github.com/google/docsy
   github_project_repo: https://github.com/google/docsy
@@ -60,7 +65,7 @@ params:
   time_format_blog: Monday, January 02, 2006
   time_format_default: January 2, 2006
   rss_sections: [blog] # TODO: drop since this is the default
-  gcs_engine_id: 011217106833237091527:la2vtv2emlw
+  gcs_engine_id: 011217106833237091527:la2vtv2emlw # cSpell:disable-line
   offlineSearch: false
   offlineSearchSummaryLength: 70
   offlineSearchMaxResults: 10
@@ -104,6 +109,10 @@ params:
         icon: fa-brands fa-stack-overflow
         desc: Practical questions and curated answers
     developer:
+      - name: Project info
+        url: /project/
+        icon: fa fa-book
+        desc: Project design documentation and resources
       - name: GitHub
         url: https://github.com/google/docsy
         icon: fa-brands fa-github
@@ -129,3 +138,17 @@ module:
   mounts:
     - source: content/en
       target: content
+    # Mount the repo's top-level .md files under project
+    - source: ../README.md
+      target: content/project/readme.md
+    - source: ../CHANGELOG.md
+      target: content/project/changelog.md
+    - source: ../CONTRIBUTING.md
+      target: content/project/contributing.md
+
+security:
+  http:
+    mediaTypes:
+    - ^application/javascript
+
+# cSpell:ignore docsy github goldmark markmap plantuml readingtime userguide

@@ -8,12 +8,12 @@
 */}}
 {{- $url := . -}}
 
-{{ with resources.GetRemote $url -}}
+{{ with try (resources.GetRemote $url) -}}
   {{ with .Err -}}
     {{ errorf "Could not retrieve asset at '%s' from CDN. Reason: %s." $url . -}}
-  {{ else -}}
+  {{ else with .Value -}}
     {{ .RelPermalink -}}
+  {{ else -}}
+    {{ errorf "Could not find asset at '%s' on the CDN." $url -}}
   {{ end -}}
-{{ else -}}
-  {{ errorf "Could not find asset at '%s' on the CDN." $url -}}
 {{ end -}}

@@ -3,17 +3,18 @@ title: Look and Feel
 date: 2017-01-05
 weight: 2
 description: Customize colors, fonts, code highlighting, and more for your site.
-spelling: cSpell:ignore wordmark docsy myclass anotherclass
+# prettier-ignore
+cSpell:ignore: anotherclass autoprefixing baseof blockscover docsy lightdark monokai myclass onedark wordmark
 ---
 
 By default, a site using Docsy has the theme's default fonts, colors, and
 general look and feel. However, if you want your own color scheme (and you
 probably will!) you can very easily override the theme defaults with your own
 project-specific values - Hugo will look in your project files first when
-looking for information to build your site. And because [Docsy uses Bootstrap
-5] and SCSS for styling, you can override just single values (such as project colors
-and fonts) in its special SCSS project variables file, or do more serious customization
-by creating your own styles.
+looking for information to build your site. And because [Docsy uses Bootstrap 5]
+and SCSS for styling, you can override just single values (such as project
+colors and fonts) in its special SCSS project variables file, or do more serious
+customization by creating your own styles.
 
 Docsy also provides options for styling your code blocks, using either Chroma or
 Prism for highlighting.
@@ -77,8 +78,8 @@ Docsy has [Bootstrap][bs-docs] features such as gradient backgrounds
 can also be toggled in your project variables file by setting the variables to
 `false`.
 
-To add colors to or modify Bootstrap's [color maps], use **`assets/scss/_variables_project_after_bs.scss`**.
-For example:
+To add colors to or modify Bootstrap's [color maps], use
+**`assets/scss/_variables_project_after_bs.scss`**. For example:
 
 ```scss
 $custom-colors: (
@@ -101,9 +102,9 @@ Learn how to modify maps, see [Maps and loops] and [Adding theme colors].
 
 ### Light/dark color themes
 
-Docsy 0.10.0 supports light and [dark mode] color themes. To allow your website users
-to choose light/dark modes, **enable the Docsy [light/dark menu]** or create
-your own custom theme selector.
+Docsy 0.10.0 supports light and [dark mode] color themes. To allow your website
+users to choose light/dark modes, **enable the Docsy [light/dark menu]** or
+create your own custom theme selector.
 
 If your site uses [Chroma for code highlighting], there are extra steps required
 so that code-block styles are compatible with light/dark mode:
@@ -116,7 +117,8 @@ For details, see [Chroma for code highlighting].
 
 {{% alert title="Note" %}}
 
-Light/dark color themes, only affect documentation pages, and white [blocks shortcodes].
+Light/dark color themes, only affect documentation pages, and white [blocks
+shortcodes].
 
 [blocks shortcodes]: shortcodes/#shortcode-blocks
 
@@ -198,7 +200,7 @@ using Chroma, see [Syntax Highlighting].
 Hugo's default Chroma style is [monokai]. To use another style, such as [tango],
 add the following to your project configuration:
 
-<!-- prettier-ignore -->
+<!-- prettier-ignore-start -->
 {{< tabpane >}}
 {{< tab header="Configuration file:" disabled=true />}}
 {{< tab header="hugo.toml" lang="toml" >}}
@@ -221,6 +223,7 @@ markup:
 }
 {{< /tab >}}
 {{< /tabpane >}}
+<!-- prettier-ignore-end -->
 
 For the complete list of available styles, see [Chroma Style Gallery].
 
@@ -237,8 +240,8 @@ Docsy's default Chroma styles for [light/dark mode] are:
 - [tango] for light mode
 - [onedark] for dark mode
 
-If you would like to use other styles, save the [Hugo generated Chroma styles] to
-the appropriate file:
+If you would like to use other styles, save the [Hugo generated Chroma styles]
+to the appropriate file:
 
 - [assets/scss/td/chroma/_light.scss]
 - [assets/scss/td/chroma/_dark.scss]
@@ -269,7 +272,7 @@ button in the top right-hand corner. To disable this functionality, set
 Optionally, you can enable Prism syntax highlighting in your
 `hugo.toml`/`hugo.yaml`/`hugo.json`:
 
-<!-- prettier-ignore -->
+<!-- prettier-ignore-start -->
 {{< tabpane >}}
 {{< tab header="Configuration file:" disabled=true />}}
 {{< tab header="hugo.toml" lang="toml" >}}
@@ -288,6 +291,7 @@ params:
 }
 {{< /tab >}}
 {{< /tabpane >}}
+<!-- prettier-ignore-end -->
 
 When this option is enabled your site uses
 [Prism](https://prismjs.com/index.html) instead of Chroma for code block
@@ -335,8 +339,8 @@ files with your own.
 The default Docsy navbar (`.td-navbar`) displays your site identity, consisting
 of the following:
 
-1.  [Your logo][], which is included in the navbar as an inline SVG, styled by `.td-navbar .navbar-brand svg`.
-    For the style details, see [_nav.scss][].
+1.  [Your logo][], which is included in the navbar as an inline SVG, styled by
+    `.td-navbar .navbar-brand svg`. For the style details, see [_nav.scss][].
 
     To ensure your logo displays correctly, you may want to resize it and ensure
     that it doesn't have height and width attributes so that its size is fully
@@ -367,11 +371,12 @@ switch your site's documentation page display between a default "light" mode,
 and a "dark" mode where the text is displayed in a light color on a dark
 background.
 
-To enable the display of a light/[dark mode] menu in the navbar, set `params.ui.showLightDarkModeMenu`
-to `true` in your project's configuration file. The dropdown menu appears at the
-right, immediately before the [search box], if present.
+To enable the display of a light/[dark mode] menu in the navbar, set
+`params.ui.showLightDarkModeMenu` to `true` in your project's configuration
+file. The dropdown menu appears at the right, immediately before the [search
+box], if present.
 
-<!-- prettier-ignore -->
+<!-- prettier-ignore-start -->
 {{< tabpane >}}
 {{< tab header="Configuration file:" disabled=true />}}
 {{< tab header="hugo.toml" lang="toml" >}}
@@ -394,6 +399,7 @@ params:
 }
 {{< /tab >}}
 {{< /tabpane >}}
+<!-- prettier-ignore-end -->
 
 [dark mode]: https://getbootstrap.com/docs/5.3/customize/color-modes/#dark-mode
 [search box]: /docs/adding-content/search/
@@ -402,8 +408,8 @@ params:
 
 For pages containing a [blocks/cover][] shortcode, like most homepages, the
 navbar is translucent as long as the hero image hasn't scrolled up past the
-navbar. For an example, see the [About Docsy][] page. This initial translucent setting
-ensures that the hero image is maximally visible.
+navbar. For an example, see the [About Docsy][] page. This initial translucent
+setting ensures that the hero image is maximally visible.
 
 After the hero image has scrolled past the navbar, the navbar's (opaque)
 background color is set -- usually to the site's [primary color][].
@@ -460,7 +466,8 @@ illustrated in the following example:
 {.td-initial .my-dark-table-style}
 ```
 
-The example above uses [Markdown attribute][] syntax, and might render like this:
+The example above uses [Markdown attribute][] syntax, and might render like
+this:
 
 <!-- prettier-ignore-start -->
 | Shape    | Number of sides |
@@ -478,54 +485,40 @@ The example above uses [Markdown attribute][] syntax, and might render like this
 ### Add code to head or before body end
 
 If you need to add some code (CSS import, cookie consent, or similar) to the
-`head` section on every page, add the `head-end.html` partial to your project:
-
-```
-layouts/partials/hooks/head-end.html
-```
-
-And add the code you need in that file. Your partial code is automatically
-included just before the end of the theme partial
-[`head.html`](https://github.com/google/docsy/blob/main/layouts/partials/head.html).
-The theme version of
-[`head-end.html`](https://github.com/google/docsy/blob/main/layouts/partials/hooks/head-end.html)
-is empty.
+`head` section on every page, add a [hooks/head-end.html] partial to your
+project (the theme version is an empty placeholder). The content of this partial
+is automatically included just before the end of the theme partial [head.html].
 
 Similarly, if you want to add some code right before the `body` end, create your
-own version of the following file:
+own version of [hooks/body-end.html]. This partial is included automatically at
+the end of the theme partial [scripts.html].
 
-```
-layouts/partials/hooks/body-end.html
-```
+Both [head.html] and [scripts.html] are included from [baseof.html], Docsy's
+[base template][].
 
-Any code in this file is included automatically at the end of the theme partial
-[`scripts.html`](https://github.com/google/docsy/blob/main/layouts/partials/head.html).
+[baseof.html]: https://github.com/google/docsy/blob/main/layouts/baseof.html
+[base template]: https://gohugo.io/templates/base/
+[head.html]:
+  https://github.com/google/docsy/blob/main/layouts/_partials/head.html
+[hooks/body-end.html]:
+  https://github.com/google/docsy/blob/main/layouts/_partials/hooks/body-end.html
+[hooks/head-end.html]:
+  https://github.com/google/docsy/blob/main/layouts/_partials/hooks/head-end.html
+[scripts.html]:
+  https://github.com/google/docsy/blob/main/layouts/_partials/head.html
 
-Both `head.html` and `scripts.html` are then used to build Docsy's
-[base page layout](https://github.com/google/docsy/blob/main/layouts/_default/baseof.html),
-which is used by all the other page templates:
+### Adding a banner before page content (EXPERIMENTAL) {#before-page-content}
 
-<!-- prettier-ignore -->
-```html
-<!doctype html>
-<html lang="{{ .Site.Language.Lang }}" class="no-js">
-  <head>
-    {{ partial "head.html" . }}
-  </head>
-  <body class="td-{{ .Kind }}">
-    <header>
-      {{ partial "navbar.html" . }}
-    </header>
-    <div class="container-fluid td-default td-outer">
-      <main role="main" class="td-main">
-        {{ block "main" . }}{{ end }}
-      </main>
-      {{ partial "footer.html" . }}
-    </div>
-    {{ partialCached "scripts.html" . }}
-  </body>
-</html>
-```
+To have a banner or other similar content appear at the top of the pages in a
+section, add the relevant HTML to a [_td-content-after-header.html] file in the
+section's page path under `layouts` -- such as
+`layouts/blog/_td-content-after-header.html`. Add the file directly under
+`layouts` to have the file processed for all docs, blog, and swagger pages. The
+file's content will be included inside the `div.td-content` after `</header>`,
+just before `.Content` is rendered.
+
+[_td-content-after-header.html]:
+  https://github.com/google/docsy/blob/main/layouts/_td-content-after-header.html
 
 ## Adding custom class to the body element
 
