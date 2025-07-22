@@ -45,11 +45,11 @@ Then follow the instructions in [Host on Netlify](https://gohugo.io/hosting-and-
       * If you are using Docsy as a [Hugo module](/docs/get-started/docsy-as-module/) or NPM package, you can just specify `hugo`.
    3. Click **Show advanced**.
    4. In the **Advanced build settings** section, click **New variable**.
-   5. Specify `NODE_VERSION` as the **Key** for the new variable, and set its **Value** to the [latest LTS version](https://nodejs.org/en/download/) of node.js (minimum recommended version: `v20.x`).
+   5. Specify `NODE_VERSION` as the **Key** for the new variable, and set its **Value** to the [latest LTS version](https://nodejs.org/en/download/) of Node.js.
    6. In the **Advanced build settings** section, click **New variable**.
-   7. Specify `HUGO_VERSION` as the **Key** for the new variable, and set its **Value** to the [latest version](https://github.com/gohugoio/hugo/releases) of Hugo (minimum recommended version: `0.125.4`).
+   7. Specify `HUGO_VERSION` as the **Key** for the new variable, and set its **Value** to the [latest version](https://github.com/gohugoio/hugo/releases) of Hugo.
    8. In the **Advanced build settings** section, click **New variable** again.
-   9. Specify `GO_VERSION` as the **Key** for the new variable, and set its **Value** to the [latest version](https://go.dev/dl/) of Go (minimum recommended version: `1.21`).
+   9. Specify `GO_VERSION` as the **Key** for the new variable, and set its **Value** to the [latest version](https://go.dev/dl/) of Go.
 
    If you don't want your site to be indexed by search engines, you can add an environment flag to your build command to specify a non-`production` environment, as described in [Build environments and indexing](#build-environments-and-indexing).
 1. Click **Deploy site**.
@@ -75,9 +75,9 @@ If you have an existing deployment you can view and update the relevant informat
 
 ## Deployment on GitHub Pages
 
-If your repo is hosted on [GitHub](https://github.com), a simple option is to serve your site with [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages). GitHub Pages lets you create project, user, and organization sites; for a project site, your site URL will be `http(s)://<username>.github.io/<repository_name>`, custom domains are also supported. GitHub Pages come with [continuous deployment](https://docs.github.com/en/actions/deployment/about-deployments/about-continuous-deployment) using GitHub actions, while the [marketplace for actions](https://github.com/marketplace/actions) has useful tools for spell and link checking, deploy previews, and more. Using your existing GitHub account, you can start by using the free plan for publicly available repositories, with premium tiers available for business use cases.
+If your repo is hosted on [GitHub](https://github.com), a simple option is to serve your site with [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages). GitHub Pages lets you create project, user, and organization sites; for a project site, your site URL will be `http(s)://<username>.github.io/<repository_name>`, custom domains are also supported. GitHub Pages come with [continuous deployment](https://docs.github.com/en/actions/deployment/about-deployments/about-continuous-deployment) using GitHub actions, while the [marketplace for actions](https://github.com/marketplace?no-link-check&type=actions) has useful tools for spell and link checking, deploy previews, and more. Using your existing GitHub account, you can start by using the free plan for publicly available repositories, with premium tiers available for business use cases.
 
-The Docsy example site repo provides a [workflow file](https://github.com/google/docsy-example/blob/master/.github/workflows/deploy-github-pages.yml) that you can use when deploying to GitHub Pages. If you used the example site as template for your new site as described [here](https://www.docsy.dev/docs/get-started/docsy-as-module/example-site-as-template/), you may already have this file in your repo, if not the instructions below show you how to create your own workflow file.
+The Docsy example site repo provides a [workflow file](https://github.com/google/docsy-example/blob/master/.github/workflows/deploy-github-pages.yml?no-link-check) that you can use when deploying to GitHub Pages. If you used the example site as template for your new site as described [here](https://www.docsy.dev/docs/get-started/docsy-as-module/example-site-as-template/), you may already have this file in your repo, if not the instructions below show you how to create your own workflow file.
 
 Before deploying on GitHub Pages, make sure that you've pushed your site source to your chosen GitHub repo, following any setup instructions in [Using the theme](/docs/get-started/docsy-as-module).
 
@@ -180,7 +180,7 @@ Make sure to correctly set your site's `baseURL`, either via hugo's `--baseURL '
 
     1. Under **Build and deployment**, select **Deploy from a branch** in the **source** dropdown.
 
-    2. From the **branch** dropdown, select **gh-page** as branch where the site is built from.
+    2. From the **branch** dropdown, select **gh-pages** as branch where the site is built from.
 
     3. From the **folder** dropdown, select **/(root)** as root directory.
 
@@ -207,7 +207,7 @@ For advanced use cases, the [`hugo-action`](https://github.com/peaceiris/actions
 
 ## Deployment with Amazon S3 + Amazon CloudFront
 
-There are several options for publishing your web site using [Amazon Web Services](https://aws.amazon.com), as described in this [blog post](https://adrianhall.github.io/cloud/2019/01/31/which-aws-service-for-hosting/). This section describes the most basic option, deploying your site using an S3 bucket and activating the CloudFront CDN (content delivery network) to speed up the delivery of your deployed contents.
+There are several options for publishing your web site using [Amazon Web Services](https://aws.amazon.com). This section describes the most basic option, deploying your site using an S3 bucket and activating the CloudFront CDN (content delivery network) to speed up the delivery of your deployed contents.
 
 1. After your [registration](https://portal.aws.amazon.com/billing/signup#/start) at AWS, create your S3 bucket, connect it with your domain, and add it to the CloudFront CDN. This [blog post](https://www.noorix.com.au/blog/how-to/hosting-static-website-with-aws-s3-cloudfront/) has all the details and provides easy to follow step-by-step instructions for the whole procedure.
 1. Download and install the latest version 2 of the AWS [Command Line Interface](https://docs.aws.amazon.com/cli/latest/userguide/get-started-install.html) (CLI). Then configure your CLI instance by issuing the command `aws configure` (make sure you have your AWS Access Key ID and your AWS Secret Access Key at hand):

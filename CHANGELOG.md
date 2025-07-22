@@ -18,19 +18,74 @@ Useful links:
 [releases]: https://github.com/google/docsy/releases
 [tags]: https://github.com/google/docsy/tags
 
-## 0.11.1 or 0.12.0
+## 0.12.0
 
-> ### UNRELEASED: this planned version is still under development
+> **UNRELEASED: this planned version is still under development**
 
-For the full list of changes, see the [0.x.y] release notes.
+For the full list of changes, see the [0.12.0] release notes.
 
 **Breaking changes**:
 
+- Renames the default Docsy heading render hook and heading self-link partials.
+  This is a breaking change only if your project uses this feature. For details,
+  see [Heading self links][] ([#2223]).
+- Relocates and adapts layouts in response to Hugo's [new template system][].
+  For details, see [Adapt to new template system in Hugo v0.146.0 #2243][#2243].
+- **IMPORTANT**: if your project overrides any of the layout files mentioned in
+  [#2243], then apply the same name changes in your project files. In
+  particular, note that:
+  - Taxonomy-related layout files: names have been _swapped_, and `terms.html`
+    is now singular ([#2257]):
+    - Renames `_default/taxonomy.html` to `term.html` (singular)
+    - Renames `_default/terms.html` to `taxonomy.html`
+  - Renames `layouts/**/content.html` by adding a `_td-` filename prefix
+    ([#2259]).
+
+[#2257]: https://github.com/google/docsy/pull/2257
+[#2259]: https://github.com/google/docsy/pull/2259
+[new template system]: https://gohugo.io/templates/new-templatesystem-overview/
+
+**Potential breaking changes**:
+
+- Removes shortcode `figure`, hugo's built-in shortcode `figure` can/will be
+  used instead.
+
 **New**:
+
+- **[Breadcrumb navigation]** support has been enhanced and adjusted:
+  - You can now disable breadcrumbs for an entire project, or individual pages
+    or sections by setting `ui.breadcrumb_disable` to true. For details, see
+    [Breadcrumb navigation][].
+  - **Blog** pages now also have breadcrumbs by default ([#1788]).
+  - Index-page single-element breadcrumb lists are hidden by default ([#2160]).
+- Support for a [_td-content-after-header.html] page-content render hook, which
+  can be [content type][] specific ([#2192]). For details, see the [User
+  Guide][before-page-content].
 
 **Other changes**:
 
-[0.x.y]: https://github.com/google/docsy/releases/latest?FIXME=v0.X.Y
+- **Blog** section index page content and title used to be ignored, they are now
+  displayed ([#1787]). To recover the old behavior use the following style
+  override: `.td-section.td-blog .td-content { display: none; }`.
+- Adds a `comment` shortcode, as a drop-in replacement for the one removed from
+  Hugo.
+
+[0.12.0]: https://github.com/google/docsy/releases/latest?FIXME=v0.12.0
+[#1787]: https://github.com/google/docsy/issues/1787
+[#1788]: https://github.com/google/docsy/issues/1788
+[#2160]: https://github.com/google/docsy/pull/2160
+[#2192]: https://github.com/google/docsy/pull/2192
+[#2223]: https://github.com/google/docsy/pull/2223
+[#2243]: https://github.com/google/docsy/pull/2243
+[before-page-content]:
+  https://www.docsy.dev/docs/adding-content/lookandfeel/#before-page-content
+[Breadcrumb navigation]:
+  https://www.docsy.dev/docs/adding-content/navigation/#breadcrumb-navigation
+[content type]: https://gohugo.io/quick-reference/glossary/#content-type
+[Heading self links]:
+  https://www.docsy.dev/docs/adding-content/navigation/#heading-self-links
+[_td-content-after-header.html]:
+  https://github.com/google/docsy/blob/main/layouts/_td-content-after-header.html
 
 ## 0.11.0
 
@@ -45,7 +100,7 @@ For the full list of changes, see the [0.11.0] release notes.
 - When a section's sidebar entries are truncated because there are more than
   [params.ui.sidebar_menu_truncate] section entries, a warning is issued.
 
-[0.11.0]: https://github.com/google/docsy/releases/latest?FIXME=v0.X.Y
+[0.11.0]: https://github.com/google/docsy/releases/v0.11.0
 [bs-rtl]: https://getbootstrap.com/docs/5.3/getting-started/rtl/
 [Adding a community page]:
   https://www.docsy.dev/docs/adding-content/content/#adding-a-community-page
@@ -106,11 +161,12 @@ this release are listed next.
   [path_base_for_github_subdir]. Projects will need to adjust the value of
   [path_base_for_github_subdir] to be relative to the file's physical location.
 
-- Class names to disable [repository links] were misnamed with a suffix of the form
-  `--KIND`. The new suffix is `__KIND`. For details, see [Disabling links].
+- Class names to disable [repository links] were misnamed with a suffix of the
+  form `--KIND`. The new suffix is `__KIND`. For details, see [Disabling links].
 
 - **Heading self-link** support has been reimplemented and projects must now
-  explicitly enable the feature. For details, see [Heading self links].
+  explicitly enable the feature. For details, see [Heading self
+  links][0.9.0:hsl].
 
 **Footer changes**: refactoring, for easier customization, and simplification.
 For details concerning all footer changes, see [#1818].
@@ -138,7 +194,7 @@ For details concerning all footer changes, see [#1818].
 [Footer layout]: https://www.docsy.dev/blog/2024/0.9.0/#footer-layout
 [Footer copyright]: https://www.docsy.dev/blog/2024/0.9.0/#footer-copyright
 [Footer streamlined]: https://www.docsy.dev/blog/2024/0.9.0/#footer-streamlined
-[Heading self links]: https://www.docsy.dev/blog/2024/0.9.0/#heading-self-links
+[0.9.0:hsl]: https://www.docsy.dev/blog/2024/0.9.0/#heading-self-links
 [look and feel]: https://www.docsy.dev/blog/2024/0.9.0/#look-and-feel
 [mermaid]:
   https://www.docsy.dev/docs/adding-content/diagrams-and-formulae/#diagrams-with-mermaid
@@ -155,10 +211,11 @@ For the full list of changes, see the [0.8.0] release notes.
 
 **Breaking changes**:
 
-- Docsy is packaged as a **single Hugo module** ([#1120]).
-  - For details, see [Use Docsy as a Hugo Module].
-- **Important**: non-Hugo-module projects should read the [Docsy NPM install
-  side-effect] note.
+- Docsy is packaged as a **single Hugo module** ([#1120]). For details, see [Use
+  Docsy as a Hugo Module].
+- **Important**: non-Hugo-module projects should be aware of the [Docsy NPM
+  install side-effect]. Also, for guidance on Hugo-reported "failed to load
+  modules" error, see [Docsy as an NPM package].
 - **Page feedback**, or [User feedback]:
   - In support of projects configuring analytics outside of Docsy, feedback
     functionality is enabled regardless of whether
@@ -177,6 +234,8 @@ For the full list of changes, see the [0.8.0] release notes.
 [#1726]: https://github.com/google/docsy/pull/1726
 [#1727]: https://github.com/google/docsy/pull/1727
 [0.8.0]: https://github.com/google/docsy/releases/v0.8.0
+[Docsy as an NPM package]:
+  https://docsy.dev/docs/get-started/other-options/#option-3-docsy-as-an-npm-package
 [Docsy NPM install side-effect]:
   https://docsy.dev/docs/get-started/other-options/#docsy-npm-install-side-effect
 [Use Docsy as a Hugo Module]:
@@ -252,7 +311,8 @@ For the full list of changes, see the [0.7.0] release notes.
 - **Shortcodes**:
   - Now using Hugo's native support for processing HTML & markdown, not file
     extension testing. ([#906])
-  - Dropped support for pre-Hugo-0.54.x behavior of `{{% %}}`. ([#939])
+  - Dropped support for pre-Hugo-0.54.x behavior of [shortcodes with markdown],
+    `{{%/*...*/%}}`. ([#939])
   - `blocks/section`: **default** and accepted values of the `type` argument
     have changed! For details, see [blocks/section] ([#1472]).
   - **Card shortcodes** ([#1376])]:
@@ -265,6 +325,8 @@ For the full list of changes, see the [0.7.0] release notes.
 
 [chroma-docsy]:
   https://www.docsy.dev/docs/adding-content/lookandfeel/#code-highlighting-with-chroma
+[shortcodes with markdown]:
+  https://gohugo.io/content-management/shortcodes/#shortcodes-with-markdown
 
 - **Detection of draw.io diagrams** is now **disabled** by default [#1185]
 
@@ -336,12 +398,13 @@ CHANGES** are documented below.
   as text.
 - **Display logo by default**. Most projects show their logo in the navbar. In
   support of this majority, Docsy now displays a logo by default. For details on
-  how to hide the logo (or your brand name), see [Styling your project logo and name].
+  how to hide the logo (or your brand name), see [Styling your project logo and
+  name].
 - **Upgraded Bootstrap** to v4.6.2 from v4.6.1, resulting in some style changes
   (such as an adjustment in the size of `small`). For details, see [v4.6.2
   release notes].
-- **[Upgraded FontAwesome]** to v6 from v5. While many icons were renamed, the v5
-  names still work. For details about icon renames and more, see [What's
+- **[Upgraded FontAwesome]** to v6 from v5. While many icons were renamed, the
+  v5 names still work. For details about icon renames and more, see [What's
   changed].
 - **Search-box**: the HTML structure and class names have changed, due to the
   Font Awesome upgrade, for both online and offline search. This may affect your
@@ -449,9 +512,10 @@ For the full list of changes, see the [0.2.0] release notes.
 
 **New**:
 
-- Add official Docsy support for [Hugo modules]. Many thanks to the dedicated and
-  patient efforts of [@deining], who researched, experimented, and implemented this
-  feature. Thanks to [@deining] and [@LisaFC] for the doc updates.
+- Add official Docsy support for [Hugo modules]. Many thanks to the dedicated
+  and patient efforts of [@deining], who researched, experimented, and
+  implemented this feature. Thanks to [@deining] and [@LisaFC] for the doc
+  updates.
 
   For details, see
   [Migrate to Hugo Modules](https://www.docsy.dev/docs/updating/convert-site-to-module/).
@@ -463,9 +527,10 @@ For the full list of changes, see the [0.2.0] release notes.
 
 <!-- ENTRY TEMPLATE ------------------------------------------------------
 
+```
 ## 0.X.Y
 
-> ### UNRELEASED: this planned version is still under development
+> **UNRELEASED: this planned version is still under development**
 
 For the full list of changes, see the [0.x.y] release notes.
 
@@ -478,5 +543,6 @@ For the full list of changes, see the [0.x.y] release notes.
 **Other changes**:
 
 [0.x.y]: https://github.com/google/docsy/releases/latest?FIXME=v0.X.Y
+```
 
 ---------------------------------------------------------------------------->
