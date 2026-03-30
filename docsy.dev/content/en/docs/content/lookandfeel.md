@@ -3,8 +3,13 @@ title: Look and Feel
 date: 2017-01-05
 weight: 2
 description: Customize colors, fonts, code highlighting, and more for your site.
+params:
+  BringYourOwnLightDarkModeMenuAlertTitle: >-
+    <i class='fa-solid fa-exclamation-triangle pe-1'></i> Bring your own
+    light/dark mode menu <span class='badge text-bg-warning fs-6
+    float-end'>EXPERIMENTAL</span>
 # prettier-ignore
-cSpell:ignore: anotherclass autoprefixing baseof blockscover docsy lightdark monokai myclass onedark wordmark FOUC
+cSpell:ignore: anotherclass autoprefixing docsy lightdark monokai myclass onedark rgba wordmark FOUC
 ---
 
 By default, a site using Docsy has the theme's default fonts, colors, and
@@ -21,7 +26,9 @@ Prism for highlighting.
 
 [Docsy uses Bootstrap 5]: /blog/2023/bootstrap-5-migration/
 
-## Project style files
+## Project styles
+
+### Project style files
 
 To customize your project's look and feel, create your own version of the
 following Docsy placeholder files (note the **`_project*.scss`** suffixes) and
@@ -45,20 +52,79 @@ place them inside your project's `assets/scss/` folder:
 [`_styles_project.scss`]:
   https://github.com/google/docsy/blob/main/assets/scss/_styles_project.scss
 [`_variables.scss`]:
-  https://github.com/google/docsy/blob/main/assets/scss/_variables.scss
+  https://github.com/google/docsy/blob/main/assets/scss/td/_variables.scss
 [`_variables_project.scss`]:
   https://github.com/google/docsy/blob/main/assets/scss/_variables_project.scss
 [`_variables_project_after_bs.scss`]:
   https://github.com/google/docsy/blob/main/assets/scss/_variables_project_after_bs.scss
 [bs_var]: https://github.com/twbs/bootstrap/blob/v5.3.3/scss/_variables.scss
 
-{{% alert title="Tip" %}}
+> [!SUCCESS] Files you can customize (the rest are internal)
+>
+> The files listed above, and only these files, are supported for project
+> customization. All other SCSS files under `assets/scss/` are internal to
+> Docsy.
 
-PostCSS (autoprefixing of CSS browser-prefixes) is not enabled when running in
-server mode (it is a little slow), so Chrome is the recommended choice for
-development.
+### Advanced style customization
 
-{{% /alert %}}
+The recommended way to define project-specific styles that override Docsy
+defaults is via the `_styles_project.scss` file. This file is part of Docsy’s
+public customization surface. For the complete list of files, see
+[Project style files](#project-style-files).
+
+However, some projects require visual designs that differ substantially from
+Docsy’s base styling. In such cases, selectively overriding individual CSS rules
+can become complex and brittle.
+
+#### :warning: Resetting internal styles {#resetting-internal-styles}
+
+Docsy’s internal SCSS files (in [`assets/scss/td/`][assets/scss/td]) are
+organized by feature or function. For example, `_alerts.scss` contains the
+styles for [Alerts], while `_code.scss` and `_code-dark.scss` style
+[code blocks](#code-blocks).
+
+That said, if your project’s design diverges significantly from Docsy’s base
+styles, you may choose to _intentionally reset_ some of these defaults by
+shadowing selected internal SCSS files with empty files. That is, create an
+empty SCSS file in your project with the same relative path (`assets/scss/td/`)
+and filename as the Docsy file you want to reset.
+
+> [!CAUTION]
+>
+> This technique relies on Docsy internals and is therefore not covered by
+> semantic versioning stability expectations. Internal SCSS files may change in
+> _any_ release, which may require reviewing and adjusting your project
+> overrides when upgrading the theme. Use only if you accept the added
+> maintenance cost.
+
+After resetting selected internal SCSS files, define your project’s actual
+styles in `_styles_project.scss`, as usual.
+
+#### Extra styles {#extra-styles}
+
+{{%_param BADGE EXPERIMENTAL info %}}
+
+Docsy includes an optional [td/extra][] styles folder with [experimental] styles
+that projects can test. These styles may eventually be merged into the core
+theme or change without notice.
+
+To enable them, add the following to your project's `_styles_project.scss`:
+
+```scss
+@import 'td/extra';
+```
+
+If your project uses Bootstrap's default color theme (that is, you do not
+override `$primary`, `$secondary`, etc.) then you can opt in to the extra
+dark-mode style adjustments as follows:
+
+```scss
+@import 'td/extra/bs-defaults';
+```
+
+[td/extra]: https://github.com/google/docsy/tree/main/assets/scss/td/extra
+[assets/scss/td]: https://github.com/google/docsy/tree/main/assets/scss/td
+[Alerts]: /docs/content/adding-content/#alerts
 
 ## Colors and color themes
 
@@ -105,31 +171,48 @@ To learn how to modify maps, see [Maps and loops][] and [Adding theme colors][].
 [variable defaults]:
   https://getbootstrap.com/docs/5.3/customize/sass/#variable-defaults
 
-### Light/dark color modes
+### Light/dark color theme and mode support {#lightdark-color-feature}
 
-Docsy enables **light and dark** color modes through Bootstrap's [color modes][]
-feature.
+Docsy supports light and dark color _themes_ and color mode selection through
+Bootstrap's [color modes][] feature.
 
-You can adjust dark-mode support as follows:
+What is the difference between a color theme and a color mode as used in Docsy?
 
-- **Docsy ships with dark mode support**, offering a good user experience (UX)
-  for site visitors through the following features:
-  - Docsy includes **complete CSS** styles for (both light mode and) dark mode
-    **by default**, so your site can automatically switch between light and dark
-    modes based on system settings or user preference.
+- A color _theme_ is a semantic color palette (primary, secondary, success,
+  etc.) defined in SCSS and used by components and utilities.
+- A color _mode_ is a switchable presentation of the site (light or dark) from
+  the user's point of view, implemented through CSS variable overrides
+  (activated via `data-bs-theme`).
 
-  - But, if you prefer, you can **disable** dark mode entirely, see
-    [How to disable dark mode](#how-to-disable-dark-mode).
+The next section explains how to enable light/dark color themes and color mode
+selection.
 
-  - **No dark-mode flashes**: By default, Docsy adds page header content (like
-    meta tags, inline styles, and an early-loading script) to avoid or generally
-    prevent _Flashes Of Unstyled Content_ ([FOUC]) when pages load.[^FOUC-alt]
+## Light/dark color modes
 
-    [^FOUC-alt]:
-        Also referred to as "Flash of incorrect theme" and, humorously, [_Flash
-        of inAccurate coloR Theme_][FART] (FART).
+Docsy enables **light and dark** color mode selection, and the underlying color
+theme support, through Bootstrap's [color modes][] feature. All sites are in
+light mode by default, whether or not you choose to enable dark mode for your
+project.
 
-    [FART]: https://css-tricks.com/flash-of-inaccurate-color-theme-fart/
+Docsy ships with dark mode support, offering a good user experience (UX) for
+site visitors through the following features:
+
+- **Complete CSS** styles for both light and dark themes _by default_, so your
+  site can automatically switch between light and dark modes based on system
+  settings or user preference.
+
+- But, if you prefer, you can **disable** dark mode entirely, see
+  [How to disable dark mode](#how-to-disable-dark-mode).
+
+- **No dark-mode flashes**: By default, Docsy adds page header content (like
+  meta tags, inline styles, and an early-loading script) to avoid or generally
+  prevent _Flashes Of Unstyled Content_ ([FOUC]) when pages load.[^FOUC-alt]
+
+  [^FOUC-alt]:
+      Also referred to as "Flash of incorrect theme" and, humorously, [_Flash of
+      inAccurate coloR Theme_][FART] (FART).
+
+  [FART]: https://css-tricks.com/flash-of-inaccurate-color-theme-fart/
 
 - **Light/dark-mode menu**: Enable Docsy's
   [light/dark-mode menu](#lightdark-mode-menu) in the [navbar](#navbar) to allow
@@ -145,23 +228,29 @@ You can adjust dark-mode support as follows:
 
   - **Color-contrast adjustments**: if your site has custom theme colors, you
     will probably need to selectively tune your dark-mode theme colors to ensure
-    that the have good color-contrast. Learn
+    that they have good color-contrast. Learn
     [how to pick colors with good color-contrast](#pick-good-color-contrast).
-
-{{% alert title="Terminology note" color=info %}}
-
-In Bootstrap, a color **mode** refers to a switchable presentation of the site
-(e.g., light or dark) from the user's point of view, implemented through CSS
-variable overrides activated via `data-bs-theme`.
-
-Whereas a color **theme** refers to the semantic color palette (primary,
-secondary, success, etc.) defined in SCSS and used by components and utilities.
-
-{{% /alert %}}
 
 [FOUC]: https://en.wikipedia.org/wiki/Flash_of_unstyled_content
 
-#### How to disable dark mode
+### Choosing themes or color modes for your site
+
+To help you decide whether to support light, dark, or both themes on your site,
+see:
+
+- [The Designer’s Guide to Dark Mode Accessibility][], January 2026
+- [Dark Mode vs Light Mode: The Complete UX Guide for 2025][], August 2025
+- [Dark and Light Mode: A Simple Guide for Web Design and Development][], May
+  2025
+
+[The Designer’s Guide to Dark Mode Accessibility]:
+  https://www.accessibilitychecker.org/blog/dark-mode-accessibility/
+[Dark Mode vs Light Mode: The Complete UX Guide for 2025]:
+  https://altersquare.io/dark-mode-vs-light-mode-the-complete-ux-guide-for-2025/
+[Dark and Light Mode: A Simple Guide for Web Design and Development]:
+  https://www.accessibilityfirst.at/posts/dark-and-light-mode-a-simple-guide-for-web-design-and-development
+
+### How to disable dark mode
 
 Docsy, like Bootstrap, ships with CSS support for light and dark [color modes][]
 by default.
@@ -181,7 +270,12 @@ To [disable dark mode][] entirely:
   https://getbootstrap.com/docs/5.3/customize/color-modes/#building-with-sass
 [site configuration]: https://gohugo.io/configuration/introduction/
 
-#### How to pick colors with good color-contrast (EXPERIMENTAL) {#pick-good-color-contrast}
+### How to pick colors with good color-contrast {#pick-good-color-contrast}
+
+> [!CAUTION]
+>
+> This feature is [experimental]. We invite projects to try it and share
+> feedback.
 
 Getting dark-mode theme colors to have proper contrast can be tricky. Docsy
 provides [_color-adjustments-dark.scss] as an example of theme color
@@ -216,25 +310,13 @@ dark mode theme customization file and import it in your project's
 [Chroma for code highlighting]: #code-highlighting-with-chroma
 [Light/dark code styles]: #lightdark-code-styles
 
-{{% alert title="EXPERIMENTAL" color="info" %}}
-
-This feature is experimental. We're releasing this early to so that projects can
-try out this approach and provide feedback on its usefulness and convenience.
-
-{{% /alert %}}
-
-{{% alert title="Note" %}}
-
-Light/dark color themes, only affect documentation pages, and white [blocks
-shortcodes][]. Other block shortcodes with fixed text and background colors are
-not affected by light/dark color mode changes.
-
-[blocks shortcodes]: shortcodes/#shortcode-blocks
-
-{{% /alert %}}
-
-[Generate syntax highlighter CSS]:
-  https://gohugo.io/content-management/syntax-highlighting/#generate-syntax-highlighter-css
+> [!NOTE]
+>
+> Light/dark color themes only affect documentation pages and white [`blocks/*`
+> shortcodes][blocks]. Other block shortcodes with fixed text and background
+> colors are not affected by light/dark color mode changes.
+>
+> [blocks]: shortcodes/#blocks
 
 ## Fonts
 
@@ -295,17 +377,27 @@ To only set the text color use `.-text-<color>`:
 
 <div class="-text-blue pt-3 display-6">Text: Blue</div>
 
-## Code highlighting with Chroma
+## Code blocks
 
-As of Hugo 0.60+, you can choose from a range of code block highlight and color
-styles using [Chroma](https://github.com/alecthomas/chroma). These styles are
-applied to your fenced code blocks. For details about code highlighting in Hugo
-using Chroma, see [Syntax Highlighting][].
+Docsy supports syntax highlighting of code blocks and other styling options
+through two syntax highlighters, [Chroma](#code-highlighting-with-chroma) and
+[Prism](#code-highlighting-with-prism).
 
-### Chroma style configuration
+### Code highlighting with Chroma
 
-Hugo's default Chroma style is [monokai]. To use another style, such as [tango],
-add the following to your project configuration:
+Hugo uses [Chroma](https://github.com/alecthomas/chroma) for syntax
+highlighting, which provides highlight and color styles for fenced code blocks.
+For details, see the [Syntax highlighting][].
+
+#### Basic Chroma style configuration {#chroma-style-configuration}
+
+> [!NOTE]
+>
+> If your project uses [light/dark color modes](#lightdark-color-modes), then
+> skip to [Light/dark code styles](#lightdark-code-styles).
+
+Hugo's default Chroma style is [monokai][]. To use another style, such as
+[tango][], add the following to your project configuration.
 
 <!-- prettier-ignore-start -->
 {{< tabpane >}}
@@ -336,18 +428,17 @@ For the complete list of available styles, see [Chroma Style Gallery].
 
 [Chroma Style Gallery]: https://xyproto.github.io/splash/docs/
 [monokai]: https://xyproto.github.io/splash/docs/monokai.html
-[onedark]: https://xyproto.github.io/splash/docs/onedark.html
 [tango]: https://xyproto.github.io/splash/docs/tango.html
 
-### Light/dark code styles
+#### Light/dark code styles and more {#lightdark-code-styles}
 
 To enable code styles that are compatible with light/dark color modes, you need
 to complete the following setup steps:
 
 1.  Ensure that `markup.highlight.noClasses` is `false` in your project config.
-    For details about this option, see [Generate syntax highlighter CSS].
+    For details about this option, see [noClasses][].
 
-2.  Add the following import to your project's [`_styles_project.scss`] file:
+2.  Add the following import to your project's [`_styles_project.scss`][] file:
 
     ```scss
     @import 'td/code-dark';
@@ -355,15 +446,56 @@ to complete the following setup steps:
 
 Docsy's default Chroma styles for [light/dark modes][] are:
 
-- [tango] for light mode
-- [onedark] for dark mode
+- [friendly][] for light mode
+- [native][] for dark mode
 
-If you would like to use other styles, save the [Hugo generated Chroma styles]
+If you would like to use other styles, save the [Hugo generated Chroma styles][]
 to the appropriate file:
 
 - [assets/scss/td/chroma/_light.scss]
 - [assets/scss/td/chroma/_dark.scss]
 
+Note that we tweak the [native][] style (in dark mode) so that the Generic
+Output color looks less prominent, offering better contrasts with the
+command-text color. For details, see [_code-dark.scss][].
+
+##### Selecting console block content
+
+In `console` code blocks that contain commands and command output, the command
+prompt and command output are unselectable. This is useful when copying commands
+to the clipboard. Give it a try:
+
+```console
+$ echo "Hello, world!"
+Hello, world!
+$ echo "Nice to meet you!"
+Nice to meet you!
+```
+
+Clicking copy-code leaves this code in your clipboard:
+
+```sh
+echo "Hello, world!"
+echo "Nice to meet you!"
+```
+
+For details, see [_code.scss][].
+
+If you want the entire content of a console block to be selectable, use a
+`console` language alias instead, such as `bash-session` or `shell-session`.
+Give it a try:
+
+```shell-session
+$ echo "Hello, world!"
+Hello, world!
+$ echo "Nice to meet you!"
+Nice to meet you!
+```
+
+[_code.scss]:
+  https://github.com/google/docsy/blob/main/assets/scss/td/_code.scss
+[_code-dark.scss]:
+  https://github.com/google/docsy/blob/main/assets/scss/td/_code-dark.scss
 [assets/scss/td/chroma/_dark.scss]:
   https://github.com/google/docsy/blob/main/assets/scss/td/chroma/_dark.scss
 [assets/scss/td/chroma/_light.scss]:
@@ -371,21 +503,23 @@ to the appropriate file:
 [Hugo generated Chroma styles]:
   https://gohugo.io/commands/hugo_gen_chromastyles/
 [light/dark modes]: #lightdark-color-modes
+[friendly]: https://xyproto.github.io/splash/docs/friendly.html
+[native]: https://xyproto.github.io/splash/docs/native.html
 
-### Code blocks without a specified language
+#### Code blocks without a specified language
 
 By default, highlighting is not applied to code blocks without a specified
 language. If you would like code highlighting to apply to _all_ code blocks,
 even without a language, set `markup.highlight.guessSyntax` to `true` in your
 project's configuration file.
 
-### Copy to clipboard
+#### Copy to clipboard
 
 If you are using a Docsy 0.6.0 or later, code blocks show a "Copy to clipboard"
 button in the top right-hand corner. To disable this functionality, set
 `disable_click2copy_chroma` to `true` in your configuration file.
 
-## Code highlighting with Prism
+### Code highlighting with Prism
 
 Optionally, you can enable Prism syntax highlighting in your
 `hugo.toml`/`hugo.yaml`/`hugo.json`:
@@ -430,7 +564,7 @@ supports:
 [prismjs-download+]:
   https://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javascript+bash+c+csharp+cpp+go+java+markdown+python+scss+sql+toml+yaml&plugins=toolbar+copy-to-clipboard
 
-### Code blocks with no language
+#### Code blocks with no language
 
 By default, Prism code highlighting styles are not applied to code blocks
 without a specified language, instead you get Docsy's default style of grey with
@@ -438,7 +572,7 @@ black text. To apply Prism styling to code blocks with no language or a language
 not supported by Prism, specify `none` as the language after your triple
 backticks.
 
-### Extending Prism for additional languages or plugins
+#### Extending Prism for additional languages or plugins
 
 If the included Prism configuration is not sufficient for your requirements, and
 you want to use additional languages or plugins you can replace the included
@@ -451,6 +585,131 @@ files with your own.
    - Copy the CSS file to `static/css/prism.css`
 
 ## Navbar
+
+By default, a Docsy site has a navbar that appears at the top of every page.
+
+### Default look and feel
+
+Docsy’s navbar styles are designed mobile-first.
+
+#### On mobile
+
+On **mobile**, the default navbar:
+
+- Uses the page’s (light/dark) body text and background colors to ensure that
+  navbar elements (like links, menus, and the search box) render correctly
+  across [light/dark color modes](#lightdark-color-modes).
+- Has an opaque background color.
+- Scrolls with the page content.
+
+#### On desktop
+
+On **desktop** (`md` breakpoint and up), the default appearance is the same,
+except that the navbar is fixed to the top of the viewport.
+
+##### Translucent over cover images {#default-over-cover}
+
+In addition, on desktop, when a page contains a [blocks/cover][] (typically used
+for hero images on the home page), Docsy makes the navbar translucent while the
+cover is visible by adding the classes `td-navbar-cover td-navbar-transparent`
+to the navbar. For an example, see the [About Docsy][] page. This initial
+translucent setting ensures that the hero image is maximally visible. Once the
+user has scrolled past the cover (hero image), the navbar reverts to its default
+(opaque) style.
+
+[About Docsy]: https://www.docsy.dev/about/
+[blocks/cover]: /docs/content/shortcodes/#blocks-cover
+
+### Customizing the navbar {#navbar-customization}
+
+#### Navbar height {#navbar-height}
+
+{{%_param BADGE EXPERIMENTAL info %}}
+
+To adjust the navbar height, override one or both of the [experimental][] SCSS
+variables `$td-navbar-min-height` and `$td-navbar__main-min-height-mobile` in
+your [project's variables file](#project-style-files).
+
+The min height on mobile is the sum of `$td-navbar-min-height` and
+`$td-navbar__main-min-height-mobile`, on desktop it is just
+`$td-navbar-min-height`.
+
+#### Background color/opacity {#navbar-background}
+
+To change the navbar background color/opacity across your site, override the
+SCSS variable `$td-navbar-bg-color` in your [project’s variables file][].
+
+For example, to set the navbar background color to the primary color:
+
+```scss
+$td-navbar-bg-color: $primary;
+```
+
+> [!NOTE]- CSS variable implementation details
+>
+> Docsy uses the following CSS custom properties **internally** to style the
+> navbar: `--td-navbar-bg-color`, `--td-navbar-backdrop-filter`, and
+> `--td-navbar-border-bottom`. These can be overridden for advanced
+> customization. For an example, see the User Guide's [project
+> styles][ug-project-styles]. For the base styles, see [_nav.scss].
+
+To set the navbar background color to a slightly translucent primary color use:
+
+```scss
+$td-navbar-bg-color: rgba(var(--bs-body-bg-rgb), 0.85);
+```
+
+To also blur the background requires this more advanced styling:
+
+```scss
+.td-navbar {
+  --td-navbar-bg-color: #{$td-navbar-bg-color};
+  --td-navbar-backdrop-filter: blur(8px);
+}
+```
+
+For more examples, see the User Guide's [project styles][ug-project-styles].
+
+#### Setting the navbar light/dark color theme {#navbar-lightdark-theme}
+
+Whether it is your chosen site design, or you want more contrast between the
+navbar and the page background (especially over a cover image), you can set the
+navbar theme to `dark` by adding `params.ui.navbar_theme: dark` to:
+
+- Your site config to apply this **site-wide**
+- Page [front matter `params`][] to apply this **per page**
+
+```yaml
+params:
+  ui:
+    navbar_theme: dark
+```
+
+[front matter `params`]:
+  https://gohugo.io/content-management/front-matter/#front-matter-parameters
+
+Internally, this adds `data-bs-theme="dark"` to the navbar, triggering
+Bootstrap's dark theme. This affects the default colors of navbar and all its
+child elements such as links, menus, and the search box.
+
+#### Translucent over cover images {#customize-over-cover}
+
+When a page contains a [blocks/cover], the navbar is styled with
+`td-navbar-cover`. While the navbar is over the cover, it is styled with
+`td-navbar-transparent` as well, which sets the background color to transparent
+and applies a blur effect (once the user has scrolled past the cover, the
+`td-navbar-transparent` class is removed).
+
+This translucent effect can sometimes make the text of navbar items difficult to
+read due to the lack of contrast. Adjusting the navbar background color/opacity
+or blur can help. For an example, see the User Guide's [project
+styles][ug-project-styles].
+
+Alternatively, you can disable the “translucent over cover” behavior globally by
+setting `params.ui.navbar_translucent_over_cover_disable` to `true` in your
+[site configuration][].
+
+[project’s variables file]: #project-style-files
 
 ### Styling your project logo and name
 
@@ -477,7 +736,7 @@ of the following:
     }
     ```
 
-[_nav.scss]: https://github.com/google/docsy/blob/main/assets/scss/_nav.scss
+[_nav.scss]: https://github.com/google/docsy/blob/main/assets/scss/td/_nav.scss
 [project-styles]: /docs/content/lookandfeel/#project-style-files
 [wordmark]: https://en.wikipedia.org/wiki/Wordmark
 [your logo]: /docs/content/iconsimages/#add-your-logo
@@ -527,49 +786,48 @@ params:
 
 {{% /tab %}} {{< /tabpane >}}
 
-{{% alert title="<i class='fa-solid fa-exclamation-triangle pe-1'></i> Bring your own light/dark mode menu <span class='badge text-bg-warning fs-6 float-end'>EXPERIMENTAL</span>" color=warning %}}
-
-If you would like to use your own light/dark mode menu implementation instead of
-Docsy's default implementation:
-
-1. Set `params.ui.showLightDarkModeMenu` to `"enable-only (experimental)"`. This
-   will enable base dark-mode functionality (such as full CSS, no-flash support)
-   without Docsy's menu.
-
-2. Add your menu code to in the [layouts/_partials/theme-toggler.html] partial
-   file, thus overriding Docsy's default implementation.
-
-[layouts/_partials/theme-toggler.html]:
-  https://github.com/google/docsy/blob/main/layouts/_partials/theme-toggler.html
-
-This feature is experimental. It may be removed and/or changed in
-backwards-incompatible ways in a future releases.
-
-{{% /alert %}}
+> [!CAUTION] {{% _param BringYourOwnLightDarkModeMenuAlertTitle %}}
+>
+> If you would like to use your own light/dark mode menu implementation instead
+> of Docsy's default implementation:
+>
+> 1. Set `params.ui.showLightDarkModeMenu` to `"enable-only (experimental)"`.
+>    This will enable base dark-mode functionality (such as full CSS, no-flash
+>    support) without Docsy's menu.
+> 2. Add your menu code to in the [layouts/_partials/theme-toggler.html] partial
+>    file, thus overriding Docsy's default implementation.
+>
+> This feature is experimental. It may be removed and/or changed in
+> backwards-incompatible ways in a future release.
 
 [dark mode]: https://getbootstrap.com/docs/5.3/customize/color-modes/#dark-mode
+[layouts/_partials/theme-toggler.html]:
+  https://github.com/google/docsy/blob/main/layouts/_partials/theme-toggler.html
 [search box]: /docs/content/search/
 
-### Translucent over cover images
+## Alerts
 
-For pages containing a [blocks/cover][] shortcode, like most homepages, the
-navbar is translucent as long as the hero image hasn't scrolled up past the
-navbar. For an example, see the [About Docsy][] page. This initial translucent
-setting ensures that the hero image is maximally visible.
+> [!NOTE] Coming soon: how to customize alerts
+>
+> - `alert-primary` is the default
+> - `alert-<AlertType>` is used
 
-After the hero image has scrolled past the navbar, the navbar's (opaque)
-background color is set -- usually to the site's [primary color][].
+To change the styling of an alert of type `abc`, override the CSS class
+`.alert-abc` like so:
 
-The text of navbar entries can be difficult to read with some hero images. In
-these cases, you can disable navbar translucency by setting the
-`params.ui.navbar_translucent_over_cover_disable` option to `true` in your
-site's [configuration file][].
+```scss
+.alert-abc {
+  @extend .alert-primary;
+}
+```
 
-[About Docsy]: https://www.docsy.dev/about/
-[blocks/cover]: /docs/content/shortcodes/#blockscover
-[configuration file]:
-  https://gohugo.io/getting-started/configuration/#configuration-file
-[primary color]: #site-colors
+For example, to make alert headings `h3` (the default is `h4`), use:
+
+```scss
+.td-alert-heading {
+  @extend .h3;
+}
+```
 
 ## Tables
 
@@ -586,17 +844,15 @@ without the need to wrap the table in a `<div>`. It does, however, mean that all
 your tables have `display` set to `block`. If you don't want this, you can
 create your own custom styles for tables.
 
-{{% alert title="Note" %}}
-
-Our table styling goes against the [Bootstrap recommendation to _wrap_
-tables][wrap-tables] with `.table-responsive` &mdash; however, we think letting
-users create responsive tables with just Markdown table syntax is more
-convenient.
+> [!NOTE]
+>
+> Our table styling goes against the [Bootstrap recommendation to _wrap_
+> tables][wrap-tables] with `.table-responsive` &mdash; however, we think
+> letting users create responsive tables with just Markdown table syntax is more
+> convenient.
 
 [wrap-tables]:
   https://getbootstrap.com/docs/5.3/content/tables/#responsive-tables
-
-{{% /alert %}}
 
 To render a table without Docsy styling, apply the `.td-initial` class to the
 table. From the resulting `<table>` style base, it is easier to apply your own
@@ -654,7 +910,9 @@ Both [head.html] and [scripts.html] are included from [baseof.html], Docsy's
 [scripts.html]:
   https://github.com/google/docsy/blob/main/layouts/_partials/head.html
 
-### Adding a banner before page content (EXPERIMENTAL) {#before-page-content}
+### Adding a banner before page content {#before-page-content}
+
+{{%_param BADGE EXPERIMENTAL info %}}
 
 To have a banner or other similar content appear at the top of the pages in a
 section, add the relevant HTML to a [_td-content-after-header.html] file in the
@@ -703,4 +961,8 @@ highest-level page you want to modify.
 
 [bs-docs]: https://getbootstrap.com/docs/
 [color modes]: https://getbootstrap.com/docs/5.3/customize/color-modes/
+[experimental]: /project/about/changelog/#experimental
+[noClasses]: https://gohugo.io/content-management/syntax-highlighting/#noclasses
 [syntax highlighting]: https://gohugo.io/content-management/syntax-highlighting/
+[ug-project-styles]:
+  https://github.com/google/docsy/blob/main/docsy.dev/assets/scss/_styles_project.scss

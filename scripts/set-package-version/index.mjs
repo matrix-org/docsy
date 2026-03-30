@@ -2,8 +2,7 @@
 
 /**
  * Updates the version in package.json and optionally docsy.dev/hugo.yaml.
- * Can set the entire version or add/remove a build ID suffix.
- * The hugo.yaml file is only updated when --version is used.
+ * Can set the entire version, set build metadata, or strip to release version.
  *
  * For usage, see the usage() function below.
  *
@@ -17,7 +16,33 @@ import { readHugoYaml, writeHugoYaml } from './hugo-yaml.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const packagePath = path.join(__dirname, '..', '..', 'package.json');
+
+function getPackagePath() {
+  return path.join(process.cwd(), 'package.json');
+}
+
+const usageText = `
+Usage: node scripts/set-package-version/index.mjs [-h] [-s] [-v VERS | --id [BUILD-ID]]
+
+  Options:
+    --silent|-s        Don't log any messages
+    --help|-h          Show this help message
+    --version|-v VERS  Set version in target files according to VERS
+    --id [BUILD-ID]    Set build ID metadata to BUILD-ID, if provided; otherwise,
+                       set it to a timestamp-based value. Version is unchanged.
+
+  Updates the version in the TARGET FILES: package.json and docsy.dev/hugo.yaml.
+  The VERS specifier is a semver string of the form X.Y.Z-pre-rel+BUILD-ID.
+
+  The target files are updated as follows:
+
+  - In package.json, the version is set to the full version.
+  - In docsy.dev/hugo.yaml: the version and versionWithBuildId fields are set,
+    where version omits the build ID metadata.
+
+  The default behavior is to strip the pre-release suffix and build ID, if any, from
+  the target files. Useful for preparing a non-dev release.
+`;
 
 export function main(
   args = process.argv.slice(2),
@@ -42,10 +67,12 @@ export function main(
   if (version !== undefined) {
     // --version takes precedence: set the entire version directly
     newVersion = version;
+  } else if (buildId !== undefined) {
+    // --id updates/sets build metadata, preserving any pre-release suffix.
+    newVersion = adjustVersionForBuildId(currentVersion, buildId);
   } else {
-    // Use build ID logic: add/remove build ID from base version
-    const baseVersion = currentVersion.split('+')[0]; // Remove existing build ID if present
-    newVersion = adjustVersionForBuildId(baseVersion, buildId, { logger });
+    // Default: strip pre-release and build metadata for release preparation.
+    newVersion = getReleaseVersion(currentVersion);
   }
 
   let updated = false;
@@ -57,27 +84,34 @@ export function main(
     updated = true;
   }
 
-  // Only update hugo.yaml when --version is used
-  let currentHugoVersion = '';
-  if (version !== undefined) {
-    const baseVersion = newVersion.split('+')[0]; // Remove build ID if present
-    currentHugoVersion = hugoYaml.params?.version || '';
-    if (baseVersion !== currentHugoVersion) {
-      if (!hugoYaml.params) {
-        hugoYaml.params = {};
-      }
-      hugoYaml.params.version = baseVersion;
-      writeHugoYamlFn(hugoYaml);
-      hugoYamlUpdated = true;
+  const nextVersionNoBuild = removeBuildId(newVersion);
+  const nextVersionFull = newVersion;
+
+  // Keep hugo.yaml's version/versionWithBuildId view aligned with package.json.
+  const currentHugoVersion = hugoYaml.params?.version || '';
+  const currentHugoVersionWithBuildId =
+    hugoYaml.params?.versionWithBuildId || '';
+  if (
+    nextVersionNoBuild !== currentHugoVersion ||
+    nextVersionFull !== currentHugoVersionWithBuildId
+  ) {
+    if (!hugoYaml.params) {
+      hugoYaml.params = {};
     }
+    hugoYaml.params.version = nextVersionNoBuild;
+    hugoYaml.params.versionWithBuildId = nextVersionFull;
+    writeHugoYamlFn(hugoYaml);
+    hugoYamlUpdated = true;
   }
 
   if (updated || hugoYamlUpdated) {
     logger.log?.(`✓ Updated version: ${currentVersion} → ${newVersion}`);
     if (hugoYamlUpdated) {
-      const baseVersion = newVersion.split('+')[0];
       logger.log?.(
-        `✓ Updated hugo.yaml version: ${currentHugoVersion || '(none)'} → ${baseVersion}`,
+        `✓ Updated hugo.yaml version: ${currentHugoVersion || '(none)'} → ${nextVersionNoBuild}`,
+      );
+      logger.log?.(
+        `✓ Updated hugo.yaml versionWithBuildId: ${currentHugoVersionWithBuildId || '(none)'} → ${nextVersionFull || '(none)'}`,
       );
     }
   } else if (!silent) {
@@ -86,21 +120,6 @@ export function main(
 
   return newVersion;
 }
-
-const usageText = `
-Usage: node scripts/set-package-version/index.mjs [options]
-  Options:
-    --silent, -s       Don't log any messages
-    --help, -h         Show this help message
-    --version VERS     Set the entire version to VERS
-    --id BUILD-ID      Set build ID to BUILD-ID (ignored if --version is used)
-
-  Behavior:
-    - If --version VERS is provided: sets the version to VERS in both package.json and hugo.yaml
-    - If --id BUILD-ID is provided: adds BUILD-ID to the base version (package.json only)
-    - If --id "" is provided: removes the build ID (package.json only)
-    - If no --version or --id is provided: auto-generates build ID from timestamp (package.json only)
-`;
 
 export function parseArgsAndResolveBuildId(args, { logger = console } = {}) {
   function usage(exitCode = 0) {
@@ -126,12 +145,19 @@ export function parseArgsAndResolveBuildId(args, { logger = console } = {}) {
         silent = true;
         break;
       case '--version':
-        if (++i >= args.length) usage(1);
+      case '-v':
+        if (++i >= args.length) {
+          usage(1);
+        }
         version = args[i];
         break;
       case '--id':
-        if (++i >= args.length) usage(1);
-        buildId = args[i];
+        if (i + 1 >= args.length || args[i + 1].startsWith('-')) {
+          buildId = '';
+        } else {
+          i += 1;
+          buildId = args[i];
+        }
         break;
       default:
         warn?.(`Unexpected argument: ${arg}`);
@@ -139,15 +165,8 @@ export function parseArgsAndResolveBuildId(args, { logger = console } = {}) {
     }
   }
 
-  // If --version is provided, ignore --id
-  if (version === undefined) {
-    if (buildId === undefined) {
-      buildId = generateTimestamp();
-    } else if (buildId === '' && !silent) {
-      logger?.log?.(
-        'Build-ID argument is empty, so we will remove the build ID from the version.',
-      );
-    }
+  if (version === undefined && buildId === '') {
+    buildId = generateTimestamp();
   }
 
   return { version, buildId, silent };
@@ -165,52 +184,65 @@ export function generateTimestamp() {
 }
 
 /**
- * Adjusts the base version if needed when adding a build ID.
- * If the version doesn't end with -dev, increments the minor version and adds -dev suffix.
+ * Returns the core X.Y.Z version from a semver-like string.
  *
- * @param {string} baseVersion - The base version (without build ID)
- * @param {string} buildId - The build ID to add
- * @param {object} logger - Logger object with warn method
- * @returns {string} The adjusted version with build ID
+ * @param {string} version - Full or partial version string
+ * @returns {string} Core X.Y.Z version
  */
-export function adjustVersionForBuildId(
-  baseVersion,
-  buildId,
-  { logger = console } = {},
-) {
-  if (!buildId || baseVersion.endsWith('-dev')) {
-    // No adjustment needed: either no build ID or already a dev version
-    return buildId ? `${baseVersion}+${buildId}` : baseVersion;
+export function getReleaseVersion(version) {
+  const match = version.match(/^(\d+\.\d+\.\d+)/);
+  if (match) {
+    return match[1];
   }
 
-  // Need to adjust: version doesn't end with -dev
-  logger?.warn?.(
-    `Warning: Adding build ID to non-dev version. Incrementing minor version and adding -dev suffix.`,
-  );
+  // Fallback for non-standard strings.
+  return version.split('+')[0].split('-')[0];
+}
 
-  // Parse version and increment minor
-  const versionMatch = baseVersion.match(/^(\d+)\.(\d+)\.(\d+)$/);
-  if (versionMatch) {
-    const major = parseInt(versionMatch[1], 10);
-    const minor = parseInt(versionMatch[2], 10);
-    const patch = parseInt(versionMatch[3], 10);
-    const incrementedBase = `${major}.${minor + 1}.${patch}-dev`;
-    return `${incrementedBase}+${buildId}`;
-  }
+/**
+ * Returns the build metadata from a version string.
+ *
+ * @param {string} version - Full version string
+ * @returns {string} Build ID or empty string
+ */
+export function getBuildId(version) {
+  const plusIndex = version.indexOf('+');
+  return plusIndex === -1 ? '' : version.slice(plusIndex + 1);
+}
 
-  // Fallback: just append -dev if version format doesn't match
-  logger?.warn?.(
-    `Warning: Version format not recognized (${baseVersion}). Appending -dev suffix.`,
-  );
-  return `${baseVersion}-dev+${buildId}`;
+/**
+ * Returns the input version without build metadata (+...).
+ *
+ * @param {string} version - Full version string
+ * @returns {string} Version without build metadata
+ */
+export function removeBuildId(version) {
+  return version.split('+')[0];
+}
+
+/**
+ * Adds/removes BUILD-ID on top of version without build metadata.
+ *
+ * @param {string} version - Any version string
+ * @param {string} buildId - The build ID to add
+ * @returns {string} VERSION or VERSION+BUILD-ID
+ */
+export function adjustVersionForBuildId(version, buildId) {
+  const baseVersion = removeBuildId(version);
+  return buildId ? `${baseVersion}+${buildId}` : baseVersion;
+}
+
+// Backward compatible alias retained for callers/tests.
+export function removeDevSuffix(version) {
+  return getReleaseVersion(version);
 }
 
 function defaultReadPackageJson() {
-  return JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+  return JSON.parse(fs.readFileSync(getPackagePath(), 'utf8'));
 }
 
 function defaultWritePackageJson(pkg) {
-  fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2) + '\n');
+  fs.writeFileSync(getPackagePath(), JSON.stringify(pkg, null, 2) + '\n');
 }
 
 const modulePath = __filename;
