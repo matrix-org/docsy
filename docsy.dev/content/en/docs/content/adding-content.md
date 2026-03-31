@@ -2,8 +2,24 @@
 title: Adding Content
 weight: 1
 description: Add different types of content to your Docsy site.
+params:
+  alert-examples: |
+    > [!TIP]
+    >
+    > Did you know that...
+
+    > [!NOTE] Version note
+    >
+    > This feature is only available in version 2.0 and later.
+
+    > [!WARNING] :warning: Blank line required!
+    >
+    > This site uses the [Prettier] formatter, and it requires an empty line
+    > separating the alert tag/title from the alert body.
+
+    > [!DANGER] Danger Will Robinson!
 # prettier-ignore
-cSpell:ignore: goldmark Riona MacNamara frontmatter asciidoctor pandoc changefreq
+cSpell:ignore: goldmark Riona MacNamara asciidoctor pandoc changefreq
 ---
 
 So you've got a new Hugo website with Docsy, now it's time to add some content!
@@ -60,7 +76,7 @@ particular page.
 
 If you've copied the example site, you already have appropriately named
 top-level section directories for using Docsy's templates, each with an index
-page ( `_index.md` or `index.html`) page for users to land on. These top-level
+page (`_index.md` or `index.html`) for users to land on. These top-level
 sections also appear in the example site's
 [navbar](/docs/content/navigation/#site-navbar).
 
@@ -70,12 +86,13 @@ If you've copied the example site and _don't_ want to use one of the provided
 content sections, just delete the appropriate content subdirectory. Similarly,
 if you want to add a top-level section, just add a new subdirectory, though
 you'll need to specify the layout or content type explicitly in the
-[frontmatter](#page-frontmatter) of each page if you want to use any existing
+[front matter](#page-front-matter) of each page if you want to use any existing
 Docsy template other than the default one. For example, if you create a new
 directory `content/en/amazing` and want one or more pages in that custom section
-to use Docsy's `docs` template, you add `type: docs` to the frontmatter of each
+to use Docsy's `docs` template, you add `type: docs` to the front matter of each
 page:
 
+<!-- markdownlint-disable -->
 <!-- prettier-ignore-start -->
 {{< tabpane >}}
 {{< tab header="Front matter:" disabled=true />}}
@@ -108,6 +125,7 @@ description: >
 {{< /tab >}}
 {{< /tabpane >}}
 <!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
 
 Alternatively, create your own page template for your new section in your
 project's `layouts` directory based on one of the existing templates.
@@ -143,6 +161,7 @@ For example, for the `/news/` section, you can specify the following front
 matter in the index page which will change the type of the section and
 everything below it to "blog":
 
+<!-- markdownlint-disable -->
 <!-- prettier-ignore-start -->
 {{< tabpane >}}
 {{< tab header="Front matter:" disabled=true />}}
@@ -188,11 +207,13 @@ cascade:
 {{< /tab >}}
 {{< /tabpane >}}
 <!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
 
 If you want to create a "docs" site, specifying something like the following in
 the top level `_index.md` will set all top level sections to be treated as
 "docs", except for "news":
 
+<!-- markdownlint-disable -->
 <!-- prettier-ignore-start -->
 {{< tabpane >}}
 {{< tab header="Front matter:" disabled=true />}}
@@ -250,6 +271,7 @@ cascade:
 {{< /tab >}}
 {{< /tabpane >}}
 <!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
 
 Note the addition of `toc_root` here. Setting that to true for a section causes
 it to be treated as a separate part of the site, with its own left hand
@@ -258,18 +280,19 @@ navigation menu.
 An example docs-based site that uses this technique can be found at the
 [mostly docs](https://github.com/gwatts/mostlydocs/) repo.
 
-## Page frontmatter
+## Page front matter
 
-Each page file in a Hugo site has metadata frontmatter that tells Hugo about the
-page. You specify page frontmatter in TOML, YAML, or JSON (our example site and
-this site use YAML). Use the frontmatter to specify the page title, description,
-creation date, link title, template, menu weighting, and even any resources such
-as images used by the page. You can see a complete list of possible page
-frontmatter in
+Each page file in a Hugo site has metadata front matter that tells Hugo about
+the page. You specify page front matter in TOML, YAML, or JSON (our example site
+and this site use YAML). Use the front matter to specify the page title,
+description, creation date, link title, template, menu weighting, and even any
+resources such as images used by the page. You can see a complete list of
+possible page front matter in
 [Front Matter](https://gohugo.io/content-management/front-matter/).
 
-For example, here's the frontmatter for this page:
+For example, here's the front matter for this page:
 
+<!-- markdownlint-disable -->
 <!-- prettier-ignore-start -->
 {{< tabpane >}}
 {{< tab header="Front matter:" disabled=true />}}
@@ -302,84 +325,84 @@ description: >
 {{< /tab >}}
 {{< /tabpane >}}
 <!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
 
-The minimum frontmatter you need to provide is a title: everything else is up to
-you! However, if you leave out the page weight, your
+The minimum front matter you need to provide is a title: everything else is up
+to you! However, if you leave out the page weight, your
 [navigation](/docs/content/navigation) may get a little disorganized. You may
 also want to include `description` since Docsy uses that to generate the meta
 `description` tag used by search engines. See [Search Engine Optimization (SEO)
 meta tags]({{< ref "feedback#search-engine-optimization-meta-tags" >}}) for
 details.
 
-## Page contents and markup
+## Page content
 
-By default you create pages in a Docsy site as simple
-[Markdown or HTML files](https://gohugo.io/content-management/formats/) with
-[page frontmatter](#page-frontmatter), as described above. As of version 0.100,
-[Goldmark](https://github.com/yuin/goldmark/) is the only Markdown parser
-supported by Hugo.
+Most often you create pages in a Docsy site as [Markdown or HTML files][formats]
+with [page front matter](#page-front-matter). Hugo's default markup and markdown
+renderer is [Goldmark].
 
-{{% alert title="Tip" %}}
+### Markdown
 
-If you've been using versions of Hugo before 0.60 that use
-[`BlackFriday`](https://github.com/russross/blackfriday) as its Markdown parser,
-you may need to make some small changes to your site to work with the current
-`Goldmark` Markdown parser. In particular, if you cloned an earlier version of
-our example site, add the following to your `hugo.toml`/`hugo.yaml`/`hugo.json`
-to allow Goldmark to render raw HTML as well as Markdown:
+Markdown is Hugo’s default content format. Hugo renders Markdown to HTML using
+[Goldmark], which conforms to [CommonMark] and [GitHub Flavored Markdown][GFM]
+specifications and a few more extensions.
 
-<!-- prettier-ignore-start -->
-{{< tabpane >}}
-{{< tab header="Configuration file:" disabled=true />}}
-{{< tab header="hugo.toml" lang="toml" >}}
-[markup]
-  [markup.goldmark]
-    [markup.goldmark.renderer]
-      unsafe = true
-{{< /tab >}}
-{{< tab header="hugo.yaml" lang="yaml" >}}
-markup:
-  goldmark:
-    renderer:
-      unsafe: true
-{{< /tab >}}
-{{< tab header="hugo.json" lang="json" >}}
-{
-  "markup": {
-    "goldmark": {
-      "renderer": {
-        "unsafe": true
-      }
-    }
-  }
-}
-{{< /tab >}}
-{{< /tabpane >}}
-<!-- prettier-ignore-end -->
+Hugo provides Markdown features including:
 
-{{% /alert %}}
+- [Attributes] for adding custom IDs and classes to Markdown elements
+- [Extensions] such as tables, footnotes, task lists, etc.
+- [Render hooks][] for customizing the HTML output of Markdown elements.
 
-In addition to your marked-up text, you can also use Hugo and Docsy's
-[shortcodes](/docs/content/shortcodes): reusable chunks of HTML that you can use
-to quickly build your pages. Find out more about shortcodes in
-[Docsy Shortcodes](/docs/content/shortcodes).
+Docsy provides custom render hooks for the following Markdown elements:
 
-{{% alert title="Note" color="info" %}} Hugo also supports adding content using
-other markups using
-[external parsers as helpers](https://gohugo.io/content-management/formats/#additional-formats-through-external-helpers).
-For example, you can add content in RST using `rst2html` as an external parser
-(though be aware this does not support all flavors of RST, such as Sphinx RST).
-Similarly, you can use `asciidoctor` to parse Asciidoc files, or `pandoc` for
-other formats.
+- [Blockquote alerts](#alerts)
+- Code blocks for Mermaid diagrams, math and chemical equations. For details,
+  see [Diagrams and Formulae](/docs/content/diagrams-and-formulae/)
 
-External parsers may not be suitable for use with all deployment options, as
-you'll need to install the external parser and run Hugo yourself to generate
-your site (so, for example, you won't be able to use
-[Netlify's continuous deployment feature](/docs/deployment/#deployment-with-netlify)).
-In addition, adding an external parser may cause performance issues building
-larger sites. {{% /alert %}}
+### Markup, shortcodes, and content features {#markup-and-content-features}
 
-### Working with links
+Hugo supports content formats and features including HTML, [Emojis], and more.
+For details, see [Content formats][formats].
+
+In addition, you can call [shortcodes] from your content. To learn more about
+shortcodes in general, and how to use Docsy's provided shortcodes, see
+[Shortcodes](/docs/content/shortcodes).
+
+### Alerts
+
+Docsy supports Hugo's blockquote syntax for [alerts], specifically [GFM] base
+syntax for callouts, and Obsidian-style titles. For example:
+
+```markdown
+{{% _param alert-examples %}}
+```
+
+Which renders as:
+
+{{% _param alert-examples %}}
+
+In addition, Docsy supports alert types corresponding to the Bootstrap alerts
+types missing from [GFM], as well as `NB` -- short for _nota bene_.
+
+Use `NB` for short single-line notes rendered without a label. For example:
+
+```markdown
+> [!NB] **Skip this section** if the package is already installed.
+```
+
+Which renders as:
+
+> [!NB] **Skip this section** if the package is already installed.
+
+As illustrated above, the alert type is used as a title when no title is
+specified.
+
+Learn how to customize alert appearance in the [Alert][LnF-Alert] section of
+[Look and Feel][].
+
+[LnF-Alert]: /docs/content/lookandfeel/#alerts
+
+### Links
 
 Hugo lets you specify links using normal Markdown syntax, though remember that
 you need to specify links relative to your site's root URL, and that relative
@@ -415,15 +438,25 @@ resources together with the content.
 You can see examples of both approaches in this and our example site. For
 example, the source for this page is just a standalone file
 `/content/en/docs/content/adding-content.md`. However the source for
-[Docsy Shortcodes](/docs/content/shortcodes/) in this site lives in
+[Docsy Shortcodes](shortcodes/) in this site lives in
 `/content/en/docs/content/shortcodes/index.md`, with the image resource used by
-the page in the same `/shortcodes/` directory. In Hugo terminology, this is
+the page in the same `shortcodes/` directory. In Hugo terminology, this is
 called a _leaf bundle_ because it's a folder containing all the data for a
 single site page without any child pages (and uses `index.md` without an
 underscore).
 
 You can find out much more about managing resources with Hugo bundles in
-[Page Bundles](https://gohugo.io/content-management/page-bundles/).
+[Page bundles](https://gohugo.io/content-management/page-bundles/).
+
+> [!IMPORTANT]
+>
+> For multilingual single-host sites, Hugo does not duplicate shared page
+> resources (such as images) by default. You typically do not need to copy
+> shared resources into each locale's bundle. For details, see [Page resources
+> multilingual][pg-rsc-multilingual].
+
+[pg-rsc-multilingual]:
+  https://gohugo.io/content-management/page-resources/#multilingual
 
 ## Adding docs and blog posts
 
@@ -454,10 +487,10 @@ which acts as a section index page and tells Hugo that the relevant directory is
 a subsection of your docs.
 
 Docsy's `docs` layout gives you a left side navigation panel (side
-nav)[^sidebar-note] with an autogenerated nested entries based on your `docs`
-file structure. Each standalone page or subsection `_index.md` or `_index.html`
-page in the `docs/` directory appears as a side nav top-level entry, using the
-link name and `weight` metadata from the page or index.
+nav)[^sidebar-note] with autogenerated nested entries based on your `docs` file
+structure. Each standalone page or subsection `_index.md` or `_index.html` page
+in the `docs/` directory appears as a side nav top-level entry, using the link
+name and `weight` metadata from the page or index.
 
 [^sidebar-note]: Also sometimes referred to as the sidebar.
 
@@ -477,13 +510,14 @@ organizing your content with Docsy in
 
 By default a docs section landing page (the `_index.md` or `_index.html` in the
 section directory) uses a layout that adds a formatted list of links to the
-pages in the section, with their frontmatter descriptions. The
+pages in the section, with their front matter descriptions. The
 [Content and Customization](/docs/content/) landing page in this site is a good
 example.
 
 To display a simple bulleted list of links to the section's pages instead,
-specify `simple_list: true` in the landing page's frontmatter:
+specify `simple_list: true` in the landing page's front matter:
 
+<!-- markdownlint-disable -->
 <!-- prettier-ignore-start -->
 {{< tabpane >}}
 {{< tab header="Front matter:" disabled=true />}}
@@ -510,10 +544,12 @@ weight: 20
 {{< /tab >}}
 {{< /tabpane >}}
 <!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
 
-To display no links at all, specify `no_list: true` in the landing page's
-frontmatter:
+To display no links at all, specify `no_list: true` in the landing page's front
+matter:
 
+<!-- markdownlint-disable -->
 <!-- prettier-ignore-start -->
 {{< tabpane >}}
 {{< tab header="Front matter:" disabled=true />}}
@@ -540,6 +576,7 @@ weight: 20
 {{< /tab >}}
 {{< /tabpane >}}
 <!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
 
 ### Organizing your blog posts
 
@@ -556,6 +593,7 @@ or `_index.html` landing page file specifying the category title for it to
 appear properly in the left nav and top-level blog landing page. Here's the
 index page for `releases`:
 
+<!-- markdownlint-disable -->
 <!-- prettier-ignore-start -->
 {{< tabpane >}}
 {{< tab header="Front matter:" disabled=true />}}
@@ -582,10 +620,12 @@ weight: 20
 {{< /tab >}}
 {{< /tabpane >}}
 <!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
 
-To add author and date information to blog posts, add them to the page
-frontmatter:
+To add author and date information to blog posts, add them to the page front
+matter:
 
+<!-- markdownlint-disable -->
 <!-- prettier-ignore-start -->
 {{< tabpane >}}
 {{< tab header="Front matter:" disabled=true />}}
@@ -639,11 +679,12 @@ resources:
 {{< /tab >}}
 {{< /tabpane >}}
 <!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
 
 If you've copied the example site and you don't want a blog section, or want to
 link to an external blog instead, just delete the `blog` subdirectory.
 
-## Working with top-level landing pages.
+## Working with top-level landing pages
 
 Docsy's
 [default page template](https://github.com/google/docsy/blob/main/layouts/docs/baseof.html)
@@ -654,10 +695,10 @@ has no left nav and is useful for creating a home page for your site or other
 
 If you've copied the example site, you already have a simple site landing page
 in `content/en/_index.html`. This is made up of Docsy's provided Hugo shortcode
-[page blocks](/docs/content/shortcodes/#shortcode-blocks).
+[page blocks](/docs/content/shortcodes/#blocks).
 
 To customize the large landing image, which is in a
-[cover](/docs/content/shortcodes/#blockscover) block, replace the
+[cover](/docs/content/shortcodes/#blocks-cover) block, replace the
 `content/en/featured-background.jpg` file in your project with your own image
 (it can be called whatever you like as long as it has `background` in the file
 name). You can remove or add as many blocks as you like, as well as adding your
@@ -665,16 +706,16 @@ own custom content.
 
 The example site also has an About page in `content/en/about/_index.html` using
 the same Docsy template. Again, this is made up of
-[page blocks](/docs/content/shortcodes/#shortcode-blocks), including another
-background image in `content/en/about/featured-background.jpg`. As with the site
-landing page, you can replace the image, remove or add blocks, or just add your
-own content.
+[page blocks](/docs/content/shortcodes/#blocks), including another background
+image in `content/en/about/featured-background.jpg`. As with the site landing
+page, you can replace the image, remove or add blocks, or just add your own
+content.
 
 ### Building your own landing pages
 
 If you've just used the theme, you can still use all Docsy's provided
-[page blocks](/docs/content/shortcodes/#shortcode-blocks) (or any other content
-you want) to build your own landing pages in the same file locations.
+[page blocks](/docs/content/shortcodes/#blocks) (or any other content you want)
+to build your own landing pages in the same file locations.
 
 ## Adding a community page
 
@@ -684,6 +725,7 @@ automatically filled in with the project name and community links specified in
 resources that help them get involved in your project. The same links are also
 added by default to your site footer.
 
+<!-- markdownlint-disable -->
 <!-- prettier-ignore-start -->
 {{< tabpane >}}
 {{< tab header="Configuration file:" disabled=true />}}
@@ -802,6 +844,7 @@ params:
 {{< /tab >}}
 {{< /tabpane >}}
 <!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
 
 If you're creating your own site and want to add a page using this template, add
 a `/community/_index.md` file in your content root directory. If you've copied
@@ -937,9 +980,10 @@ sitemap:
 {{< /tabpane >}}
 <!-- prettier-ignore-end -->
 
-To override any of these values for a given page, specify it in page
-frontmatter:
+To override any of these values for a given page, specify it in page front
+matter:
 
+<!-- markdownlint-disable -->
 <!-- prettier-ignore-start -->
 {{< tabpane >}}
 {{< tab header="Front matter:" disabled=true />}}
@@ -979,6 +1023,19 @@ sitemap:
 {{< /tab >}}
 {{< /tabpane >}}
 <!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
 
-To learn more about configuring sitemaps, see
-[Sitemap Template](https://gohugo.io/templates/sitemap-template/).
+To learn more about configuring sitemaps, see [Sitemap Templates][].
+
+[alerts]: https://gohugo.io/render-hooks/blockquotes/#alerts
+[attributes]: https://gohugo.io/content-management/markdown-attributes/
+[commonmark]: https://spec.commonmark.org/
+[Emojis]: https://gohugo.io/quick-reference/emojis/
+[extensions]: https://gohugo.io/configuration/markup/#extensions
+[formats]: https://gohugo.io/content-management/formats/
+[GFM]: https://github.github.com/gfm/
+[Goldmark]: https://github.com/yuin/goldmark
+[Look and Feel]: /docs/content/lookandfeel/
+[render hooks]: https://gohugo.io/render-hooks/introduction/
+[shortcodes]: https://gohugo.io/content-management/shortcodes/
+[Sitemap Templates]: https://gohugo.io/templates/sitemap-template/

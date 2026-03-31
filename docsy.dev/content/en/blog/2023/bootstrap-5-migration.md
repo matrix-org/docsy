@@ -9,7 +9,7 @@ author: >
   [Docsy Steering Committee](/blog/2022/hello/#introducing-the-psc))
 date: 2023-06-05
 canonical_url: https://www.cncf.io/blog/2023/06/05/migrating-docsy-to-bootstrap-5/
-cSpell:ignore: CNCF Chalin opentelemetry techdocs
+cSpell:ignore: opentelemetry techdocs
 ---
 
 [Docsy](https://docsy.dev), and Docsy-based project websites ([including those
@@ -113,10 +113,8 @@ References:
 
 - [[BSv5] Row/col formatting breaks Docsy components #1466](https://github.com/google/docsy/issues/1466),
   in particular
-  - [[BSv5] Footer fixes: reset flex-shrink, and more·](https://github.com/google/docsy/pull/1373)
-    [Docsy PR](https://github.com/google/docsy/pull/1367)[ #1373](https://github.com/google/docsy/pull/1373)
-  - [[BSv5] Footer: drop flex-shrink tweak + other adjustments ·](https://github.com/google/docsy/pull/1523)
-    [Docsy PR](https://github.com/google/docsy/pull/1367)[ #1523](https://github.com/google/docsy/pull/1523)
+  - [[BSv5] Footer fixes: reset flex-shrink, and more · Docsy PR #1373](https://github.com/google/docsy/pull/1373)
+  - [[BSv5] Footer: drop flex-shrink tweak + other adjustments · Docsy PR #1523](https://github.com/google/docsy/pull/1523)
 - [Why are all col classes 'position: relative'? · Bootstrap v4 issue #25254](https://github.com/twbs/bootstrap/issues/25254)
 - [Why flex-shrink 0 for all columns? · Bootstrap discussion #37951](https://github.com/orgs/twbs/discussions/37951)
 
@@ -132,8 +130,7 @@ import strategy chosen, due to a Sass map initialization limitation,
 Bootstrap-client projects need to perform (emphasis mine):
 
 > ... variable customizations ... **after** `@import "functions"`, but
-> **before** > `@import "variables"` and the rest of [the Bootstrap] import
-> stack.
+> **before** `@import "variables"` and the rest of [the Bootstrap] import stack.
 
 For details, see
 [New \_maps.scss](https://getbootstrap.com/docs/5.2/migration/#new-_mapsscss)
@@ -224,8 +221,9 @@ change to a ​​`media-breakpoint-down()` argument, as discussed earlier.
 
 During the migration effort we seized the opportunity to do some long overdue
 Docsy house cleaning. For details concerning both breaking and non-breaking
-Docsy-specific changes, consult the [changelog](/site/changelog/#v070). In
-particular, one non-breaking but important change to be aware of is:
+Docsy-specific changes, consult the
+[changelog](/project/about/changelog/#v0.7.0). In particular, one non-breaking
+but important change to be aware of is:
 [[BSv5] Docsy variables cleanup ... PR #1462](https://github.com/google/docsy/pull/1462).
 
 ## Give it a try!
@@ -238,10 +236,10 @@ build of the Docsy User Guide: the
 
 After such a smoke test, we recommend systematically walking through the
 Bootstrap [migration page](https://getbootstrap.com/docs/5.2/migration/) as
-described above, and the Docsy [changelog](/site/changelog/#v070). I used this
-approach for [opentelemetry.io](https://opentelemetry.io/), which was the first
-Docsy-based project to be upgraded with a pre-release of Bootstrap-5-based
-Docsy. The upgrade went
+described above, and the Docsy [changelog](/project/about/changelog/#v0.7.0). I
+used this approach for [opentelemetry.io](https://opentelemetry.io/), which was
+the first Docsy-based project to be upgraded with a pre-release of
+Bootstrap-5-based Docsy. The upgrade went
 [quite smoothly](https://github.com/open-telemetry/opentelemetry.io/issues/2419).
 The main pain point of the OTel website was upgrading to Bootstrap 5
 [forms](https://getbootstrap.com/docs/5.2/migration/#forms); an aspect of the
@@ -270,11 +268,10 @@ to the migration effort.
     [Docsy up to Bootstrap 5.3](https://github.com/google/docsy/issues/1528).
 
 _A version of this article originally appeared as the [CNCF blog][] post
-[Migrating Docsy to Bootstrap 5 ][original post]._
+[Migrating Docsy to Bootstrap 5][original post]._
 
 [cncf blog]: https://www.cncf.io/blog/
 [cncf-docsy]:
   https://www.cncf.io/blog/2023/01/19/fast-and-effective-tools-for-cncf-and-open-source-project-websites/
 [followup blog post]: /blog/2023/docsy-0.7/
-
-[original post]: {{% param canonical_url %}}
+[original post]: <{{% param canonical_url %}}>

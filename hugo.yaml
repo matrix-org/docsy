@@ -10,10 +10,20 @@ params:
 outputFormats:
   PRINT:
     baseName: index
-    isHTML: true
+    # FIXME: leave isHTML unset (i.e. false) until we get a Hugo fix for
+    # https://github.com/gohugoio/hugo/issues/14381
+    # isHTML: true
     mediaType: text/html
     path: _print
     permalinkable: false
+
+# Needed fo KaTeX, possibly useful for others. see
+# https://github.com/google/docsy/pull/2465
+mediaTypes:
+  font/woff:
+    suffixes: [woff]
+  font/woff2:
+    suffixes: [woff2]
 
 module:
   hugoVersion:

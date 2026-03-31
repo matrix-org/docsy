@@ -1,25 +1,30 @@
 #!/usr/bin/env node
 
+// cSpell:ignore docsy
+
 /**
- * Utilities for reading and writing the version field in docsy.dev/hugo.yaml.
+ * Utilities for reading and writing version fields in docsy.dev/hugo.yaml.
  */
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-export const hugoYamlPath = path.join(
-  __dirname,
-  '..',
-  '..',
-  'docsy.dev',
-  'hugo.yaml',
-);
+/**
+ * Resolves the path to hugo.yaml. The docsy repo uses docsy.dev/hugo.yaml;
+ * docsy-example and similar sites use hugo.yaml at the repo root.
+ */
+export function getHugoYamlPath() {
+  const cwd = process.cwd();
+  const docsDevHugo = path.join(cwd, 'docsy.dev', 'hugo.yaml');
+  const rootHugo = path.join(cwd, 'hugo.yaml');
+  if (fs.existsSync(docsDevHugo)) {
+    return docsDevHugo;
+  }
+  return rootHugo;
+}
 
 export function readHugoYaml() {
-  const content = fs.readFileSync(hugoYamlPath, 'utf8');
+  const content = fs.readFileSync(getHugoYamlPath(), 'utf8');
   const lines = content.split('\n');
   const result = { params: {} };
 
@@ -52,6 +57,15 @@ export function readHugoYaml() {
       if (versionMatch) {
         result.params.version = versionMatch[1].trim();
       }
+
+      const versionWithBuildIdMatch = line.match(
+        /^  versionWithBuildId:\s*(.*)$/,
+      );
+      if (versionWithBuildIdMatch) {
+        result.params.versionWithBuildId = stripYamlQuotes(
+          versionWithBuildIdMatch[1].trim(),
+        );
+      }
     }
   }
 
@@ -59,12 +73,13 @@ export function readHugoYaml() {
 }
 
 export function writeHugoYaml(hugoYaml) {
-  const content = fs.readFileSync(hugoYamlPath, 'utf8');
+  const content = fs.readFileSync(getHugoYamlPath(), 'utf8');
   const lines = content.split('\n');
 
-  // Update the version line under params
+  // Update version fields under params.
   let inParams = false;
-  let updated = false;
+  let versionUpdated = false;
+  let versionWithBuildIdUpdated = false;
   const newLines = lines.map((line) => {
     const trimmed = line.trim();
 
@@ -88,16 +103,27 @@ export function writeHugoYaml(hugoYaml) {
     if (inParams) {
       const versionMatch = line.match(/^  version:\s*(.+)$/);
       if (versionMatch && hugoYaml.params?.version !== undefined) {
-        updated = true;
+        versionUpdated = true;
         return `  version: ${hugoYaml.params.version}`;
+      }
+
+      const versionWithBuildIdMatch = line.match(
+        /^  versionWithBuildId:\s*(.*)$/,
+      );
+      if (
+        versionWithBuildIdMatch &&
+        hugoYaml.params?.versionWithBuildId !== undefined
+      ) {
+        versionWithBuildIdUpdated = true;
+        return `  versionWithBuildId: ${yamlScalar(hugoYaml.params.versionWithBuildId)}`;
       }
     }
 
     return line;
   });
 
-  // If version line wasn't found, add it after params:
-  if (!updated && hugoYaml.params?.version !== undefined) {
+  // Add missing version line under params.
+  if (!versionUpdated && hugoYaml.params?.version !== undefined) {
     for (let i = 0; i < newLines.length; i++) {
       if (newLines[i].trim() === 'params:') {
         // Find the next non-indented line or end of params section
@@ -119,5 +145,66 @@ export function writeHugoYaml(hugoYaml) {
     }
   }
 
-  fs.writeFileSync(hugoYamlPath, newLines.join('\n'));
+  // Add missing versionWithBuildId line under params.
+  if (
+    !versionWithBuildIdUpdated &&
+    hugoYaml.params?.versionWithBuildId !== undefined
+  ) {
+    for (let i = 0; i < newLines.length; i++) {
+      if (newLines[i].trim() === 'params:') {
+        // Prefer placing versionWithBuildId immediately after version.
+        let insertIndex = -1;
+        for (let j = i + 1; j < newLines.length; j++) {
+          if (newLines[j].match(/^  version:\s*/)) {
+            insertIndex = j + 1;
+            break;
+          }
+          if (
+            newLines[j].match(/^[a-z_]+:/) &&
+            !newLines[j].match(/^params:/) &&
+            !newLines[j].match(/^  /)
+          ) {
+            break;
+          }
+        }
+
+        if (insertIndex === -1) {
+          insertIndex = i + 1;
+          while (
+            insertIndex < newLines.length &&
+            (newLines[insertIndex].match(/^  /) ||
+              newLines[insertIndex].trim() === '')
+          ) {
+            insertIndex++;
+          }
+        }
+
+        newLines.splice(
+          insertIndex,
+          0,
+          `  versionWithBuildId: ${yamlScalar(hugoYaml.params.versionWithBuildId)}`,
+        );
+        break;
+      }
+    }
+  }
+
+  fs.writeFileSync(getHugoYamlPath(), newLines.join('\n'));
+}
+
+function stripYamlQuotes(value) {
+  if (
+    (value.startsWith("'") && value.endsWith("'")) ||
+    (value.startsWith('"') && value.endsWith('"'))
+  ) {
+    return value.slice(1, -1);
+  }
+  return value;
+}
+
+function yamlScalar(value) {
+  if (value === '') {
+    return "''";
+  }
+  return String(value);
 }

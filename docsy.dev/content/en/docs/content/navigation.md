@@ -3,7 +3,7 @@ title: Navigation and Menus
 date: 2017-01-05
 weight: 3
 description: Customize site navigation for your Docsy site.
-cSpell:ignore: navs lightdark lookandfeel frontmatter notoc
+cSpell:ignore: navs lightdark lookandfeel notoc
 ---
 
 Docsy provides multiple built-in navigation features for your sites, including
@@ -16,7 +16,7 @@ A site navbar appears at the top of every site page. It is built from Hugo
 [menus] and Docsy-generated elements. Hugo [menus] consist of an array of menu
 entries, accessible via the `.Site.Menus` site variable.
 
-The `main` menu is build from:
+The `main` menu is built from:
 
 - [Menu] entries defined over the `main` menu.
 - Docsy-generated menus (depending on your site configuration):
@@ -142,17 +142,14 @@ The menu is visible in the navbar for all screen sizes. By default, the current
 site language name is shown. On narrow displays, this is replaced by the
 language code.
 
-{{% alert title="Legacy UX" color="info" %}}
-
-Prior to Docsy 0.13.0, the language selector menu could also be visible from the
-left sidebar, and its visibility in the navbar depended on the screen size. For
-details, including ways to restore the legacy behavior, see [Language menu
-visibility][].
-
-[Language menu visibility]: /blog/2025/0.13.0/#language-menu-visibility
-[Multi-language support]: /docs/language/
-
-{{% /alert %}}
+> [!INFO] Legacy UX
+>
+> Prior to Docsy 0.13.0, the language selector menu could also be visible from
+> the left sidebar, and its visibility in the navbar depended on the screen
+> size. For details, including ways to restore the legacy behavior, see
+> [Language menu visibility][lmv].
+>
+> [lmv]: /blog/2025/0.13.0/#language-menu-visibility
 
 To style the language menu, apply your custom CSS to `.td-navbar__lang-menu`.
 
@@ -422,7 +419,7 @@ By default the side nav is entirely generated from your section's pages. If you
 want to add a manual link to this menu, such as a link to an external site or a
 page in a different section of your site, you can do this by creating a
 _placeholder page file_ in the doc hierarchy with the appropriate weight and
-some special parameters in its metadata (frontmatter) to specify the link
+some special parameters in its metadata (front matter) to specify the link
 details.
 
 To create a placeholder page, create a page file as usual in the directory where
@@ -444,20 +441,21 @@ existing page of your site. For internal links you can choose to use the
 parameter `manualLinkRelref` instead of `manualLink` to use the built-in Hugo
 function
 [relref](https://gohugo.io/functions/relref/ 'External link to official Hugo Docs').
-If `relref` can't find a unique page in your site, Hugo throws a error message.
+If `relref` can't find a unique page in your site, Hugo throws an error message.
 
-{{% alert title="Note" %}} Although all generated menu and landing page links
-based on your placeholder file are set according to the parameters `manualLink`
-or `manualLinkRelref`, Hugo still generates a regular HTML site page for the
-file, albeit one with no generated links to it. To avoid confusion if users
-accidentally land on a generated placeholder page, we recommend specifying the
-URL for the external link in the normal content and / or page description of the
-page. {{% /alert %}}
+> [!NOTE]
+>
+> Although all generated menu and landing page links based on your placeholder
+> file are set according to the parameters `manualLink` or `manualLinkRelref`,
+> Hugo still generates a regular HTML site page for the file, albeit one with no
+> generated links to it. To avoid confusion if users accidentally land on a
+> generated placeholder page, we recommend specifying the URL for the external
+> link in the normal content and / or page description of the page.
 
 ### Section as sidebar root (EXPERIMENTAL) {#sidebar-root}
 
 To help readers stay focused within a section, you can “root” a section in the
-sidebar navigation. This is particularly useful when there is deeply nested
+sidebar navigation. This is particularly useful when there are deeply nested
 pages.
 
 Enable the feature in your site configuration:
@@ -610,13 +608,11 @@ viewport (configured via `rootMargin`).
 
   {{% /tab %}} {{< /tabpane >}}
 
-  {{% alert title="Smooth scrolling issue" color=info %}}
-
-  We previously enabled ScrollSpy's smooth scrolling, but it interfered with
-  hash updates in the browser URL and in-page navigation, so it is disabled by
-  default. For details see PR [#2291].
-
-  {{% /alert %}}
+> [!INFO] Smooth scrolling issue
+>
+> We previously enabled ScrollSpy's smooth scrolling, but it interfered with
+> hash updates in the browser URL and in-page navigation, so it is disabled by
+> default. For details see PR [#2291].
 
 #### Advanced ScrollSpy customization
 
@@ -624,18 +620,18 @@ For advanced customization, such as adjusting `threshold`, override
 [layouts/_partials/td/scrollspy-attr.txt]. For ScrollSpy configuration details,
 see [ScrollSpy].
 
-{{% alert title="Note" %}}
-
-ScrollSpy determines the active TOC entry using the browser's
-[IntersectionObserver API][], including its configurable [rootMargin]. Because
-of how these thresholds work, there can be brief moments while a user is
-scrolling when **no** heading is highlighted, especially when headings are close
-together or when the active region is small. For more details, see [ScrollSpy
-options][] and the discussion in [Bootstrap issue #34958][bs-34958].
-
-[bs-34958]: https://github.com/twbs/bootstrap/issues/34958
-
-{{% /alert %}}
+> [!NOTE]
+>
+> ScrollSpy determines the active TOC entry using the browser's
+> [IntersectionObserver API][], including its configurable [rootMargin]. Because
+> of how these thresholds work, there can be brief moments while a user is
+> scrolling when **no** heading is highlighted, especially when headings are
+> close together or when the active region is small. For more details, see
+> [ScrollSpy options][ss-opt] and the discussion in [Bootstrap issue
+> #34958][bs-34958].
+>
+> [bs-34958]: https://github.com/twbs/bootstrap/issues/34958
+> [ss-opt]: https://getbootstrap.com/docs/5.3/components/scrollspy/#options
 
 [cascade]: https://gohugo.io/content-management/front-matter/#cascade-1
 [IntersectionObserver API]:
@@ -646,12 +642,10 @@ options][] and the discussion in [Bootstrap issue #34958][bs-34958].
 [ScrollSpy]: https://getbootstrap.com/docs/5.3/components/scrollspy/
 [rootmargin]:
   https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin
-[ScrollSpy options]:
-  https://getbootstrap.com/docs/5.3/components/scrollspy/#options
 
 ## Breadcrumb navigation
 
-[Breadcrumb navigation] appears at the top of each non-index page be default. To
+[Breadcrumb navigation] appears at the top of each non-index page by default. To
 also display single-element breadcrumb lists in index pages, add the following
 [style override] to your project:
 
@@ -670,8 +664,8 @@ or _Tags_.
 
 As illustrated next, you can disable (non-taxonomy) breadcrumb navigation for an
 entire project, by setting `ui.breadcrumb_disable` to true in your project
-[configuration file]. Similarly, you can disabled taxonomy breadcrumbs by
-setting `ui.taxonomy_breadcrumb_disable` to true:
+[configuration file]. Similarly, you can disable taxonomy breadcrumbs by setting
+`ui.taxonomy_breadcrumb_disable` to true:
 
 {{< tabpane text=true persist=lang >}}
 {{< tab header="Configuration file:" disabled=true />}}
@@ -742,10 +736,66 @@ Your projects can also reuse (in your own custom heading render hook) or
 override the heading self-link partial `td/heading-self-link.html`, which is
 defined in [layouts/_partials/td/render-heading.html].
 
+## Heading aliases and in-page targets <a id="a-heading-aliases"></a> {#heading-aliases}
+
+By default, [heading IDs are auto-generated][] from heading text unless you set
+an explicit ID. If you change the text or explicit ID, the heading ID changes
+and existing [fragment] links to the heading will break. Treat a heading ID
+change like a page move: keep old fragments working with a heading ID alias.
+
+To create a heading ID alias:
+
+- Add an empty anchor element with the old ID to the heading.
+- Add the new heading ID using the `{#some-id}` [Markdown attributes] syntax.
+
+For example, if you rename "Getting Started" to "Quickstart":
+
+```html
+## Quickstart <a id="getting-started"></a> {#quickstart}
+```
+
+Now both `#getting-started` and `#quickstart` target the same heading and scroll
+to the right place.
+
+Give the heading alias for this section a try:
+[Heading aliases](#a-heading-aliases).[^might-not-scroll]
+
+> [!TIP] In-page targets <a id="in-page-targets-tip"></a>
+>
+> Anchor elements with IDs can be used to define in-page targets as well. For
+> example, you can link to this [in-page targets](#in-page-targets-tip)
+> tip.[^might-not-scroll]
+
+<!-- markdownlint-disable no-blanks-blockquote -->
+
+> [!IMPORTANT]
+>
+> Use an empty `<a id="..."></a>` for target IDs. Avoid using other elements
+> such as `<span>` to set targets since they can be unreliable in some browsers.
+
+### Implementation notes {#heading-aliases-implementation-notes}
+
+- A scroll offset is set for all in-page targets via `scroll-padding-top`.
+- Docsy uses the `td-anchor-no-extra-offset` class for built-in block targets
+  (such as the blocks that are targets for link-down anchors) to keep the navbar
+  offset while canceling the extra scroll padding.
+
+For details, see [scroll styles][].
+
+[^might-not-scroll]:
+    If the target is already visible, the page might not scroll.
+
 [configuration file]:
   https://gohugo.io/getting-started/configuration/#configuration-file
+[fragment]: https://gohugo.io/quick-reference/glossary/#fragment
+[heading IDs are auto-generated]:
+  https://gohugo.io/configuration/markup/#parserautoheadingid
+[hook]: https://gohugo.io/templates/render-hooks/
 [layouts/_partials/td/render-heading.html]:
   https://github.com/google/docsy/tree/main/layouts/_partials/td/render-heading.html
-[hook]: https://gohugo.io/templates/render-hooks/
+[Markdown attributes]: https://gohugo.io/content-management/markdown-attributes/
 [menu]: https://gohugo.io/content-management/menus/
 [menus]: https://gohugo.io/content-management/menus/
+[Multi-language support]: /docs/language/
+[scroll styles]:
+  https://github.com/google/docsy/blob/main/assets/scss/td/_scroll.scss
